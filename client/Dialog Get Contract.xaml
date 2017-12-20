@@ -1,0 +1,50 @@
+﻿<Window x:Class="client.Dialog_Get_Contract"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="Dialog_Get_Contract" Height="415.304" Width="586.581">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="169*"/>
+            <ColumnDefinition Width="241*"/>
+            <ColumnDefinition Width="169*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="125*"/>
+            <RowDefinition Height="19*"/>
+        </Grid.RowDefinitions>
+        <Label Content="download contract API" Margin="0"/>
+        <TextBox x:Name="textAPI" Margin="0,15" TextWrapping="Wrap" Text="http://118.31.39.242:81/_api/" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <Button Content="testapi" Margin="0" Grid.Row="1" Click="Button_Click_1"/>
+        <Label Content="avm sciprthash" Margin="0" Grid.Row="2"/>
+        <TextBox x:Name="textHash" Margin="0,15" TextWrapping="Wrap" Text="0x181778a74103a36c443d52cd1d18338ceb337bac" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <Button Content="get contract" Margin="0" Grid.Row="3" Click="Button_Click_2"/>
+        <Button Content="ok" Margin="0" Grid.Column="1" Grid.Row="5" Grid.ColumnSpan="1" IsDefault="True" Click="Button_Click"/>
+        <GroupBox Header="contract info" Margin="0" Grid.Row="4" Grid.ColumnSpan="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="131*"/>
+                    <RowDefinition Height="97*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="214*"/>
+                    <ColumnDefinition Width="167*"/>
+                    <ColumnDefinition Width="186*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock x:Name="textAVM" Grid.Column="1" Margin="0" TextWrapping="Wrap" Text="TextAVM"/>
+                <TextBlock x:Name="textMap" Grid.Column="1" Margin="0" Grid.Row="1" TextWrapping="Wrap" Text="TextMap"/>
+                <TextBlock x:Name="textABI" Grid.Column="2" Margin="0" TextWrapping="Wrap" Text="TextABI" Grid.RowSpan="2"/>
+                <avalonedit:TextEditor x:Name="coder"
+                                       ShowLineNumbers="True"    SyntaxHighlighting="C#" FontSize="10pt" IsReadOnly="True" Grid.RowSpan="2" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>

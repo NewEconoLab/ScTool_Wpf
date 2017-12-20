@@ -1,0 +1,30 @@
+﻿<Window x:Class="client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:client"
+        mc:Ignorable="d"
+        Title="Neo SmartContract Tools V0.01" Height="800" Width="1650">
+    <Grid>
+        <TabControl >
+            <TabItem Header="Welcome">
+                <Frame Content="Frame" Source="/client;component/PageWelcome.xaml">
+
+                </Frame>
+            </TabItem>
+            <TabItem Header="Compile C# Contract online">
+                <Frame Content="Frame" Source="/client;component/PageContractCompiler.xaml">
+
+                </Frame>
+            </TabItem>
+            <TabItem Header="Debug smartcontract transaction">
+                <Frame Content="Frame" Margin="0" Source="/client;component/PageContractDebug.xaml"/>
+            </TabItem>
+            <TabItem Header="Find UTXO"  >
+                <Frame Content="Frame" Source="/client;component/PageShowUTXO.xaml"></Frame>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

@@ -1,0 +1,95 @@
+﻿<Page x:Class="client.ContractDebug"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit" 
+      xmlns:local="clr-namespace:client"
+      mc:Ignorable="d" 
+      d:DesignHeight="781.449" d:DesignWidth="1384.691"
+      Title="ContractDebug" Loaded="Page_Loaded">
+
+    <Grid Background="#FFE5E5E5" FocusManager.IsFocusScope="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="160*"/>
+            <RowDefinition Height="191*"/>
+            <RowDefinition Height="250*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="205*"/>
+            <ColumnDefinition Width="66*"/>
+            <ColumnDefinition Width="64*"/>
+            <ColumnDefinition Width="117*"/>
+            <ColumnDefinition Width="115*"/>
+            <ColumnDefinition Width="159*"/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Value tool" Grid.Column="2" Grid.ColumnSpan="2">
+            <TreeView x:Name="treeData"></TreeView>
+        </GroupBox>
+        <GroupBox Header="API" Margin="0" Grid.Column="4" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="155*"/>
+                    <ColumnDefinition Width="356*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="47*"/>
+                </Grid.RowDefinitions>
+                <Label Content="download contract API" Margin="0" Grid.RowSpan="1" Grid.ColumnSpan="2"/>
+                <TextBox x:Name="textAPI" Margin="0" TextWrapping="Wrap" Text="http://118.31.39.242:81/_api/" Grid.Column="1" VerticalAlignment="Center" Height="24" Grid.RowSpan="2" />
+                <Button Content="TestAPI" Margin="10" Grid.Row="1" Click="Button_Click_1"/>
+                <Label Content="transaction log API" Margin="0" Grid.Row="2" Grid.RowSpan="1" Grid.ColumnSpan="2"/>
+                <TextBox x:Name="textAPITran" Margin="0,0,2,0" Grid.Row="2" TextWrapping="Wrap" Text="http://118.31.39.242:20332/" Grid.Column="1" VerticalAlignment="Center" Height="24" Grid.RowSpan="2" />
+                <Button Content="TestAPI" Margin="10" Grid.Row="3" Click="Button_Click_2"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="调试交易 Debug TransAction" Margin="0" Grid.RowSpan="1" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="85"/>
+                    <RowDefinition Height="99*"/>
+                </Grid.RowDefinitions>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="交易ID TXID" VerticalAlignment="Top"/>
+                <TextBox x:Name="textTid" Height="39" Margin="10,20,0,0" TextWrapping="Wrap" Text="0xfc84ab554efb7b2e1e18eb5cdb63d2220bc10eac336ff6957af4775b2c8cb5ac" VerticalAlignment="Top" Width="460"/>
+                <Button Content="Load" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Grid.RowSpan="2"/>
+                <ListBox x:Name="listLoadInfo" Margin="0,0,1,0" Grid.Row="1"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="执行顺序 AVM Run Order" Margin="0" Grid.Row="1" Grid.ColumnSpan="1" Grid.RowSpan="2">
+            <TreeView x:Name="treeCode" SelectedItemChanged="treeCode_SelectedItemChanged"  FocusManager.IsFocusScope="True"/>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="AVM ASM" Margin="0" Grid.Row="2" Grid.RowSpan="1" Grid.ColumnSpan="2">
+            <ListBox x:Name="listBoxASM" FocusManager.IsFocusScope="True" SelectionChanged="listBoxASM_SelectionChanged" />
+        </GroupBox>
+        <GroupBox Grid.Column="1" Header="Info"  Grid.Row="1" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="55*"/>
+                    <RowDefinition Height="84*"/>
+                    <RowDefinition Height="27*"/>
+                    <RowDefinition Height="60*"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="selectScript" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="40"/>
+                <Label x:Name="selectScriptDebug" Content="Label" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,25,0,0" Height="25" Width="40"/>
+                <ListBox x:Name="listStack" Grid.Row="1" SelectionChanged="listStack_SelectionChanged"/>
+                <Label Content="calcstack up,altstack down"  Grid.Row="2"/>
+
+                <ListBox x:Name="listAltStack" Grid.Row="3" SelectionChanged="listAltStack_SelectionChanged"/>
+
+            </Grid>
+        </GroupBox>
+        <GroupBox Header ="code" Margin="0" Grid.Row="1" Grid.RowSpan="2"
+                              FocusManager.IsFocusScope="True" Grid.Column="3" Grid.ColumnSpan="2">
+            <avalonedit:TextEditor x:Name="codeEdit"
+                                       ShowLineNumbers="True"    SyntaxHighlighting="C#" FontSize="10pt" IsReadOnly="True" />
+        </GroupBox>
+        <GroupBox Header="CareInfo" Grid.Row="1" Grid.RowSpan="2" Grid.Column="5">
+            <ListBox x:Name="listCare" SelectionChanged="listCare_SelectionChanged"></ListBox>
+        </GroupBox>
+    </Grid>
+</Page>

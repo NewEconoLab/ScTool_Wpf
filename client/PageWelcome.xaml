@@ -1,0 +1,72 @@
+﻿<Page x:Class="client.PageWelcome"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:client"
+      mc:Ignorable="d" 
+      d:DesignHeight="600.737" d:DesignWidth="978.947"
+      Title="PageWelcome" Loaded="Page_Loaded">
+
+    <Grid Background="#FFE5E5E5" >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500*"/>
+            <ColumnDefinition Width="200*"/>
+            <ColumnDefinition Width="300*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="202*"/>
+        </Grid.RowDefinitions>
+        <Image Margin="0" Source="resources/neologo.png" Grid.RowSpan="1" HorizontalAlignment="Right" Width="72" Grid.Row="1"/>
+        <Image Source="resources/nellogo.png" Grid.RowSpan="1" Grid.Row="1" HorizontalAlignment="Left" Grid.Column="1" Width="122"/>
+        <TextBlock HorizontalAlignment="Center"  Grid.Row="2" TextWrapping="Wrap" Text="歡迎使用智能合約工具 Welcome" VerticalAlignment="Center" Grid.ColumnSpan="2" Height="32" Width="120" TextAlignment="Center" Margin="430,4,113,4"/>
+        <GroupBox Header="智能合約分析工具 Convert AVM->ASM Code" Margin="3,0,0,0" Grid.Row="3" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="24"/>
+                    <RowDefinition Height="271*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="12*"/>
+                    <ColumnDefinition Width="13*"/>
+                    <ColumnDefinition Width="25*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="textAvm" Margin="0" Grid.Row="2" TextWrapping="Wrap" Text="0066" Grid.ColumnSpan="2" TextChanged="textAvm_TextChanged" />
+                <Button Content="FromFile" Margin="0" Grid.Row="1" Click="Button_Click"/>
+                <Button Content="FromNelSrc" Margin="0" Grid.Row="1" Grid.Column="1" Click="Button_Click_1"/>
+
+                <ListBox x:Name="listASM" Grid.Column="2" Margin="0" Grid.Row="2"/>
+                <ListBox x:Name="listSysCall" Grid.Column="3" Margin="0" Grid.Row="2"/>
+                <Label Content="Copy AVM 2 Here" Margin="0" Grid.ColumnSpan="2" Grid.RowSpan="1"/>
+                <Label Content="NEO.ASM" Margin="0" Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Label Content="Syscall in contract" Margin="0" Grid.RowSpan="2" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="2" Header="Convert tools" Margin="0" Grid.Row="3">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="65*"/>
+                    <RowDefinition Height="23*"/>
+                    <RowDefinition Height="29*"/>
+                    <RowDefinition Height="51*"/>
+                    <RowDefinition Height="202*"/>
+                </Grid.RowDefinitions>
+                <Label Content="WIF->privatekey" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="25" Width="106"/>
+                <TextBox x:Name="textWIF" Grid.Row="1" TextChanged="TextBox_TextChanged" />
+                <TextBox x:Name="textPrivate" Grid.Row="2"/>
+                <Label Content="address->hash" Grid.Row="3" HorizontalAlignment="Left"  VerticalAlignment="Top" Height="25" Width="106"/>
+                <TextBox x:Name="textAdress" Grid.Row="4" TextChanged="textAdress_TextChanged" />
+                <TextBox x:Name="textHash" Grid.Row="5"/>
+
+            </Grid>
+        </GroupBox>
+
+    </Grid>
+</Page>
