@@ -10,7 +10,7 @@ er,It is a set of tools.Include servers and clients,and all opensourced.
 
 一组服务器叫做RemoteSharpContractBuilder,暂时存放在SmartContractBrowser 项目中。他能在服务器上编译c#代码
 
-one of my server is called "RemoteSharpContractBuilder",you can find it in "SmartContractBrowser" project.it can compile c# code to avm on server.
+one of our server is called "RemoteSharpContractBuilder",you can find it in "SmartContractBrowser" project.it can compile c# code to avm on server.
 
 另一组服务器是一个定制的 neo cli 节点,暂时存放在neo-gui-nel 项目中。
 
@@ -18,7 +18,7 @@ another server is a special verison of neo-cli,you canfind it in "neo-gui-nel" p
 
 目前我们只部署了TestNet的服务API，由于我们的服务器是开发使用，经常会做各种操作。如果你喜欢这套工具，我们建议你自己部署服务。
 
-for now,We just start our spec neo-cli on neo's chain "testnet",you can start your service if you need.
+for now,We just run our spec neo-cli on neo's chain "testnet",you can run your service if you need.
 
 我们直接采用了前后端分离的设计，是因为请求开发Web工具集的呼声很高。
 我们已经准备好为Web开发工具集的API。
