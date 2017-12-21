@@ -2,7 +2,7 @@
 
 ScTool 是 SmartContract Tools 的简写，是一套NEO智能合约调测工具。
 
-ScTool is "SmartContract Tools",is a 's short version.
+ScTool is "SmartContract Tools",is a set of tools for develop neo smartcontracts.
 
 嗯，他是一套工具。包含两组服务器和前端，全部都开源。
 
