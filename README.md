@@ -1,4 +1,5 @@
 # ScTool_Wpf
+[English Document](README_EN.md)
 
 ScTool 是 SmartContract Tools 的简写，是一套NEO智能合约调测工具。
 
