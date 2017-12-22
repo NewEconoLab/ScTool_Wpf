@@ -1,108 +1,105 @@
 # ScTool_Wpf
 [English Document](README_EN.md)
 
-ScTool ÊÇ SmartContract Tools µÄ¼òÐ´£¬ÊÇÒ»Ì×NEOÖÇÄÜºÏÔ¼µ÷²â¹¤¾ß¡£
+ScTool æ˜¯ SmartContract Tools çš„ç®€å†™ï¼Œæ˜¯ä¸€å¥—NEOæ™ºèƒ½åˆçº¦è°ƒæµ‹å·¥å…·ã€‚
 
-ScTool is "SmartContract Tools",is a set of tools for develop neo smartcontracts.
+ScTool in "SmartContract Tools" is a set of tools for develop NEO smart contracts.
 
-àÅ£¬ËûÊÇÒ»Ì×¹¤¾ß¡£°üº¬Á½×é·þÎñÆ÷ºÍÇ°¶Ë£¬È«²¿¶¼¿ªÔ´¡£
+å—¯ï¼Œä»–æ˜¯ä¸€å¥—å·¥å…·ã€‚åŒ…å«ä¸¤ç»„æœåŠ¡å™¨å’Œå‰ç«¯ï¼Œå…¨éƒ¨éƒ½å¼€æºã€‚
 
-er,It is a set of tools.Include servers and clients,and all opensourced.
+It includes servers and clients, and all open-sourced.
 
-Ò»×é·þÎñÆ÷½Ð×öRemoteSharpContractBuilder,ÔÝÊ±´æ·ÅÔÚSmartContractBrowser ÏîÄ¿ÖÐ¡£ËûÄÜÔÚ·þÎñÆ÷ÉÏ±àÒëc#´úÂë
+ä¸€ç»„æœåŠ¡å™¨å«åšRemoteSharpContractBuilder,æš‚æ—¶å­˜æ”¾åœ¨SmartContractBrowser é¡¹ç›®ä¸­ã€‚ä»–èƒ½åœ¨æœåŠ¡å™¨ä¸Šç¼–è¯‘c#ä»£ç 
 
-one of our server is called "RemoteSharpContractBuilder",you can find it in "SmartContractBrowser" project.it can compile c# code to avm on server.
+One of our server is called "RemoteSharpContractBuilder". You can find it in the "SmartContractBrowser" project. It can compile C# code to .avm on the server.
 
-ÁíÒ»×é·þÎñÆ÷ÊÇÒ»¸ö¶¨ÖÆµÄ neo cli ½Úµã,ÔÝÊ±´æ·ÅÔÚneo-gui-nel ÏîÄ¿ÖÐ¡£
+å¦ä¸€ç»„æœåŠ¡å™¨æ˜¯ä¸€ä¸ªå®šåˆ¶çš„ neo cli èŠ‚ç‚¹,æš‚æ—¶å­˜æ”¾åœ¨neo-gui-nel é¡¹ç›®ä¸­ã€‚
 
-another server is a special verison of neo-cli,you canfind it in "neo-gui-nel" project.it can make info for debug smartcontract.
+Another server is a special verison of neo-cli. You can find it in the "neo-gui-nel" project. It provides info to debug smart contracts.
 
-Ä¿Ç°ÎÒÃÇÖ»²¿ÊðÁËTestNetµÄ·þÎñAPI£¬ÓÉÓÚÎÒÃÇµÄ·þÎñÆ÷ÊÇ¿ª·¢Ê¹ÓÃ£¬¾­³£»á×ö¸÷ÖÖ²Ù×÷¡£Èç¹ûÄãÏ²»¶ÕâÌ×¹¤¾ß£¬ÎÒÃÇ½¨ÒéÄã×Ô¼º²¿Êð·þÎñ¡£
+ç›®å‰æˆ‘ä»¬åªéƒ¨ç½²äº†TestNetçš„æœåŠ¡APIï¼Œç”±äºŽæˆ‘ä»¬çš„æœåŠ¡å™¨æ˜¯å¼€å‘ä½¿ç”¨ï¼Œç»å¸¸ä¼šåšå„ç§æ“ä½œã€‚å¦‚æžœä½ å–œæ¬¢è¿™å¥—å·¥å…·ï¼Œæˆ‘ä»¬å»ºè®®ä½ è‡ªå·±éƒ¨ç½²æœåŠ¡ã€‚
 
-for now,We just run our spec neo-cli on neo's chain "testnet",you can run your service if you need.
+For now, we just run our neo-cli on NEO's testnet. But you can also run it on your own chain.
 
-ÎÒÃÇÖ±½Ó²ÉÓÃÁËÇ°ºó¶Ë·ÖÀëµÄÉè¼Æ£¬ÊÇÒòÎªÇëÇó¿ª·¢Web¹¤¾ß¼¯µÄºôÉùºÜ¸ß¡£
-ÎÒÃÇÒÑ¾­×¼±¸ºÃÎªWeb¿ª·¢¹¤¾ß¼¯µÄAPI¡£
+æˆ‘ä»¬ç›´æŽ¥é‡‡ç”¨äº†å‰åŽç«¯åˆ†ç¦»çš„è®¾è®¡ï¼Œæ˜¯å› ä¸ºè¯·æ±‚å¼€å‘Webå·¥å…·é›†çš„å‘¼å£°å¾ˆé«˜ã€‚
+æˆ‘ä»¬å·²ç»å‡†å¤‡å¥½ä¸ºWebå¼€å‘å·¥å…·é›†çš„APIã€‚
 
-We use the C/S mode for this tools,beacuse a lot of people asked us to develop a web version tools.
-We are ready for web tools now.we will do that later.
- 
+We use the C/S mode for this tools, as lots of people asked us to develop web tools. This effort will follow soon.
 
 ## Functions
 
-ÕâÌ×¹¤¾ßÄ¿Ç°Ö÷ÒªÓÐÁ½¸ö¹¦ÄÜ
+è¿™å¥—å·¥å…·ç›®å‰ä¸»è¦æœ‰ä¸¤ä¸ªåŠŸèƒ½
 
-now we have this functions:
+We have the following function:
 
-1.C# online compiler C#ÔÚÏß±àÒëÆ÷
+1. C# online compiler C#åœ¨çº¿ç¼–è¯‘å™¨
 
 ![](image/pic1.png)
-½«´úÂë¸´ÖÆ½øÀ´£¬»òÕßÔÚÕâÀï±àÐ´¡£ÈôÉú³É³É¹¦£¬ÄãµÄÔ´Âë¡¢avm¡¢abiÎÄ¼þ¡¢mapÎÄ¼þ »á±»±£´æÔÚ·þÎñÆ÷ÉÏ¡£
-ÈÎºÎÈË¾ù¿É²é¿´¡£
+å°†ä»£ç å¤åˆ¶è¿›æ¥ï¼Œæˆ–è€…åœ¨è¿™é‡Œç¼–å†™ã€‚è‹¥ç”ŸæˆæˆåŠŸï¼Œä½ çš„æºç ã€avmã€abiæ–‡ä»¶ã€mapæ–‡ä»¶ ä¼šè¢«ä¿å­˜åœ¨æœåŠ¡å™¨ä¸Šã€‚
+ä»»ä½•äººå‡å¯æŸ¥çœ‹ã€‚
 
-just write your C# code here,or parse some text.and press the button "build scirpt".
-you will got a result if it is successed.
-the code\avm file\abi file\map file(map avm code -> src lines) will be saved on server.
-everyone can look them.
+Just write or paste your C# code here and press the "build scirpt" button.
+If it is successed, you will be provided with the result. 
+The code\avm file\abi file\map file (map avm code -> src lines) will be publically saved on the server.
 
-Õâ¸ö±àÒëÆ÷»ùÓÚÔ¶³ÌAPI¹¤×÷£¬ËùÒÔËû¿ÉÒÔ¿ª·¢Ò»¸öWeb°æ±¾
+è¿™ä¸ªç¼–è¯‘å™¨åŸºäºŽè¿œç¨‹APIå·¥ä½œï¼Œæ‰€ä»¥ä»–å¯ä»¥å¼€å‘ä¸€ä¸ªWebç‰ˆæœ¬
 
-this compiler depend on a remote api,so we can develop a web tool to compile c# code.
+This compiler depend on a remote api, so we can develop a web tool to compile C# code.
 ![](image/pic2.png)
-ÎÒÃÇ½¨Á¢ÁËÒ»¸ö·¶Àý¡£
+æˆ‘ä»¬å»ºç«‹äº†ä¸€ä¸ªèŒƒä¾‹ã€‚
 
-this picture is a sample.
+This image is an example.
 
-×îÖÕ£¬ÎÒÃÇ»áÌá¹©Ò»ÕûÌ×µÄWeb¿ª·¢¹¤¾ß¡£
+æœ€ç»ˆï¼Œæˆ‘ä»¬ä¼šæä¾›ä¸€æ•´å¥—çš„Webå¼€å‘å·¥å…·ã€‚
 
-we will devlop a full set of web tools for Neo£¬ finially.
+We will eventually devlop a full set of web tools for NEO.
 
-2.Debug tool,ÖÇÄÜºÏÔ¼½»Ò×µ÷ÊÔ¹¤¾ß
+2.Debug tool, æ™ºèƒ½åˆçº¦äº¤æ˜“è°ƒè¯•å·¥å…·
 
-ÁíÒ»¸ö¹¦ÄÜÊÇÕë¶ÔÒ»¸ö¾ßÌåµÄ½»Ò×£¬²é¿´ËûµÄÖ´ÐÐÏ¸½Ú
+å¦ä¸€ä¸ªåŠŸèƒ½æ˜¯é’ˆå¯¹ä¸€ä¸ªå…·ä½“çš„äº¤æ˜“ï¼ŒæŸ¥çœ‹ä»–çš„æ‰§è¡Œç»†èŠ‚
 
-another function is to check a invocation transaction,look the details in it.
+Another function is to check a invocation transaction. Take a look at the defails.
 ![](image/pic3.png)
-ÈçÍ¼ÎÒÃÇ¸Õ¸Õ·¢ÆðÁËÒ»±Ê½»Ò×
+å¦‚å›¾æˆ‘ä»¬åˆšåˆšå‘èµ·äº†ä¸€ç¬”äº¤æ˜“
 
-in this picture,we send a transaction
+In this picture, we send a transaction.
 
 ![](image/pic4.png)
 
-È»ºóÔÚµ÷ÊÔ¹¤¾ßÖÐÊäÈë½»Ò×ID¼´¿É²éÑ¯½»Ò×Ö´ÐÐµÄÏ¸½Ú¡£
-Èç¹ûµ÷ÓÃÁ´ÖÐ°üº¬ÄãÓÃÎÒÃÇµÄC#online±àÒëÆ÷±àÒëµÄºÏÔ¼£¬ÎÒÃÇ»¹ÄÜ×Ô¶¯°ïÄãÏÂÔØµ½Ô´Âë£¬²¢¶ÔÓ¦¡£
+ç„¶åŽåœ¨è°ƒè¯•å·¥å…·ä¸­è¾“å…¥äº¤æ˜“IDå³å¯æŸ¥è¯¢äº¤æ˜“æ‰§è¡Œçš„ç»†èŠ‚ã€‚
+å¦‚æžœè°ƒç”¨é“¾ä¸­åŒ…å«ä½ ç”¨æˆ‘ä»¬çš„C#onlineç¼–è¯‘å™¨ç¼–è¯‘çš„åˆçº¦ï¼Œæˆ‘ä»¬è¿˜èƒ½è‡ªåŠ¨å¸®ä½ ä¸‹è½½åˆ°æºç ï¼Œå¹¶å¯¹åº”ã€‚
 
-what you need is just input the txid on the debug tools.
-if some smartcontract script is called that is build by onlinebuilder,we can download the srccode for you too.
+You just need to input the txid to the debug tools.
+If some smart contract script is called that is build by the online builder, one can download the source code as well.
 
-ÕâÀïÓÐÄãÐèÒªµÄÒ»ÇÐÐÅÏ¢¡£
-Ö´ÐÐÕ»ºÍ¼ÆËãÕ»ÉÏµÄÖµÔÚÃ¿Ò»²½µÄÊ±ºòµÄÇé¿ö¡£
-ÓÐÄÄÐ©Syscall±»µ÷ÓÃ¡£
-Notify Log ÕâÐ©¶¼²»ÔÚ»°ÏÂ¡£
+è¿™é‡Œæœ‰ä½ éœ€è¦çš„ä¸€åˆ‡ä¿¡æ¯ã€‚
+æ‰§è¡Œæ ˆå’Œè®¡ç®—æ ˆä¸Šçš„å€¼åœ¨æ¯ä¸€æ­¥çš„æ—¶å€™çš„æƒ…å†µã€‚
+æœ‰å“ªäº›Syscallè¢«è°ƒç”¨ã€‚
+Notify Log è¿™äº›éƒ½ä¸åœ¨è¯ä¸‹ã€‚
 
-you can got everything,every detail.
-every step about avm,every thing on stack and altstack.what syscall had be called.
-you can see notify logs,everything.
+You can get everything in detail.
+Every step in the .avm, every thing on the stack and altstack that the syscall had called.
+You can also see notify logs.
 
+3.And more å…¶ä»–å¯èƒ½æ€§
 
-3.And more ÆäËû¿ÉÄÜÐÔ
+å®žé™…ä¸Šï¼Œä½ ä¹Ÿå¯ä»¥åˆ©ç”¨è¿™å¥—è°ƒè¯•å·¥å…·åŽ»å¼€å‘ç‰¹è‰²çš„çˆ¬è™«ï¼Œæ”¶é›†NEOåŒºå—é“¾ä¸Šä¸ä¸ºäººæ‰€çŸ¥çš„ç§˜å¯†ã€‚
+æˆ‘ä»¬å¯ä»¥å‡†ç¡®çš„åˆ¤å®šä¸€ä¸ªæ™ºèƒ½åˆçº¦äº¤æ˜“çš„è¡Œä¸ºï¼Œå®Œå…¨åŸºäºŽé“¾ä¸ŠçœŸå®žæ‰§è¡Œæƒ…å†µã€‚
 
-Êµ¼ÊÉÏ£¬ÄãÒ²¿ÉÒÔÀûÓÃÕâÌ×µ÷ÊÔ¹¤¾ßÈ¥¿ª·¢ÌØÉ«µÄÅÀ³æ£¬ÊÕ¼¯NEOÇø¿éÁ´ÉÏ²»ÎªÈËËùÖªµÄÃØÃÜ¡£
-ÎÒÃÇ¿ÉÒÔ×¼È·µÄÅÐ¶¨Ò»¸öÖÇÄÜºÏÔ¼½»Ò×µÄÐÐÎª£¬ÍêÈ«»ùÓÚÁ´ÉÏÕæÊµÖ´ÐÐÇé¿ö¡£
+If you want develope a net spider or sth, this is useful too.
+One can look at everything in a invocation transaction. You wont miss anything on the NEO blockchain.
 
-Acctruly,if you want developer a net spider or sth,this is useful too.
-we can look everything in a invocation transaction.you wont miss anything on neo's chain.
-
-## How to use
+## Usage
    
-±àÒë¹¦ÄÜµÄÊ¹ÓÃ·½·¨£ºÐ´´úÂë->°´±àÒë°´Å¥->¿´µ½½á¹û²¢×Ô¶¯±£´æÔÚ·þÎñÆ÷
+ç¼–è¯‘åŠŸèƒ½çš„ä½¿ç”¨æ–¹æ³•ï¼šå†™ä»£ç ->æŒ‰ç¼–è¯‘æŒ‰é’®->çœ‹åˆ°ç»“æžœå¹¶è‡ªåŠ¨ä¿å­˜åœ¨æœåŠ¡å™¨
 
-how to compile:write code -> press button -> see result (Server will keep your code)
+How to compile: 
+write code -> press button -> see the result (the server will keep your code)
 
-µ÷ÊÔ¹¦ÄÜµÄÊ¹ÓÃ·½·¨£ºÊäÈëtxid->°´load°´Å¥->¿´½á¹û
+è°ƒè¯•åŠŸèƒ½çš„ä½¿ç”¨æ–¹æ³•ï¼šè¾“å…¥txid->æŒ‰loadæŒ‰é’®->çœ‹ç»“æžœ
 
-how to debug:input the txid-> press button -> see what you got.
+How to debug:
+input the txid -> press button -> see what you got.
 
-GoodDay.
-
+Good day.
 
