@@ -22,7 +22,7 @@
             <RowDefinition Height="19*"/>
         </Grid.RowDefinitions>
         <Label Content="download contract API" Margin="0"/>
-        <TextBox x:Name="textAPI" Margin="0,15" TextWrapping="Wrap" Text="http://118.31.39.242:81/_api/" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
+        <TextBox x:Name="textAPI" Margin="0,15" TextWrapping="Wrap" Text="http://47.96.168.8:82/_api/" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Grid.ColumnSpan="2"/>
         <Button Content="testapi" Margin="0" Grid.Row="1" Click="Button_Click_1"/>
         <Label Content="avm sciprthash" Margin="0" Grid.Row="2"/>
         <TextBox x:Name="textHash" Margin="0,15" TextWrapping="Wrap" Text="0x181778a74103a36c443d52cd1d18338ceb337bac" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" VerticalAlignment="Center" Grid.ColumnSpan="2"/>

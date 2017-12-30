@@ -51,7 +51,7 @@ class A : SmartContract&#13;
                     <RowDefinition Height="31*"/>
                 </Grid.RowDefinitions>
                 <Label Content="download contract API" Grid.Row="1" Grid.RowSpan="4" HorizontalAlignment="Right" Width="141" />
-                <TextBox x:Name="textAPI"  TextWrapping="Wrap" Text="http://118.31.39.242:81/_api/" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Height="18" Margin="0,16"/>
+                <TextBox x:Name="textAPI"  TextWrapping="Wrap" Text="http://47.96.168.8:82/_api/" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"  Grid.RowSpan="2" Height="18" Margin="0,16"/>
 
 
                 <Button Content="test api" Margin="5" Click="Button_Click" Grid.Row="2"/>
