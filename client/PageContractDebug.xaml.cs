@@ -31,28 +31,34 @@ namespace client
         System.Net.WebClient wc = new client.MyWC();
         void downloadScript(string api,string savepath,string scripthash)
         {
-            var str = wc.DownloadString(api + "get?hash=" + scripthash);
-            var json = MyJson.Parse(str).AsDict();
-            if (json.ContainsKey("cs"))
+            try
             {
-                var srcResult = json["cs"].AsString();
-                srcResult = Uri.UnescapeDataString(srcResult);
-                var outfile = System.IO.Path.Combine(savepath, scripthash+".cs");
-                System.IO.File.WriteAllText(outfile, srcResult);
-            }
-            if (json.ContainsKey("avm"))
+                var str = wc.DownloadString(api + "get?hash=" + scripthash);
+                var json = MyJson.Parse(str).AsDict();
+                if (json.ContainsKey("cs"))
+                {
+                    var srcResult = json["cs"].AsString();
+                    srcResult = Uri.UnescapeDataString(srcResult);
+                    var outfile = System.IO.Path.Combine(savepath, scripthash + ".cs");
+                    System.IO.File.WriteAllText(outfile, srcResult);
+                }
+                if (json.ContainsKey("avm"))
+                {
+                    var avmResult = json["avm"].AsString();
+                    var bts = ThinNeo.Helper.HexString2Bytes(avmResult);
+                    var outfile = System.IO.Path.Combine(savepath, scripthash + ".avm");
+                    System.IO.File.WriteAllBytes(outfile, bts);
+                }
+                if (json.ContainsKey("map"))
+                {
+                    var mapResult = json["map"].AsString();
+                    mapResult = Uri.UnescapeDataString(mapResult);
+                    var outfile = System.IO.Path.Combine(savepath, scripthash + ".debug.json");
+                    System.IO.File.WriteAllText(outfile, mapResult);
+                }
+            }catch(Exception err)
             {
-                var avmResult = json["avm"].AsString();
-                var bts = ThinNeo.Helper.HexString2Bytes(avmResult);
-                var outfile = System.IO.Path.Combine(savepath, scripthash + ".avm");
-                System.IO.File.WriteAllBytes(outfile, bts);
-            }
-            if (json.ContainsKey("map"))
-            {
-                var mapResult = json["map"].AsString();
-                mapResult = Uri.UnescapeDataString(mapResult);
-                var outfile = System.IO.Path.Combine(savepath, scripthash + ".debug.json");
-                System.IO.File.WriteAllText(outfile, mapResult);
+
             }
         }
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -64,9 +70,10 @@ namespace client
             var transid = this.textTid.Text;
             byte[] info = ThinNeo.Helper.HexString2Bytes(transid.ToLower());
             transid = "0x" + ThinNeo.Helper.Bytes2HexString(info);
+            if(transid!="0x00")
             {//download and write debugfile
-                var filename = System.IO.Path.Combine(pathLog, transid + ".fulllog.7z");
-                var url = textAPITran.Text + "?jsonrpc=2.0&id=1&method=getfullloginfo&params=[%22" + transid + "%22]";
+                var filename = System.IO.Path.Combine(pathLog, transid + ".llvmhex.txt");
+                var url = textAPITran.Text + "?jsonrpc=2.0&id=1&method=getfulllog&params=[%22" + transid + "%22]";
                 var rtnstr = wc.DownloadString(url);
                 var json = MyJson.Parse(rtnstr).AsDict();
                 if(json.ContainsKey("result")==false)
@@ -74,9 +81,8 @@ namespace client
                     MessageBox.Show("找不到此交易的智能合约log。Can not find fullloginfo for this transaction.");
                     return;
                 }
-                var r = json["result"].AsString();
-                var bts = ThinNeo.Helper.HexString2Bytes(r);
-                System.IO.File.WriteAllBytes(filename, bts);
+                var txt = json["result"].AsList()[0].AsDict()["fulllog7z"].AsString();
+                System.IO.File.WriteAllText(filename, txt);
             }
 
             string pathScript = System.IO.Path.Combine(rootPath, "tempScript");

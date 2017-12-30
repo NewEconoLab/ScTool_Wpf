@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SevenZip\SevenZip.csproj" />
+    <ProjectReference Include="..\fullcode_7z\fullcode_7z.csproj" />
   </ItemGroup>
 
 </Project>

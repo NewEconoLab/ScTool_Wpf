@@ -32,13 +32,13 @@ namespace client
 
             var str = MakeRpcUrl("getutxo", new MyJson.JsonNode_ValueString(textaddress.Text));
             var result = await wc.DownloadStringTaskAsync(str);
-            var json = MyJson.Parse(result).AsDict()["result"].AsDict();
+            var json = MyJson.Parse(result).AsDict()["result"].AsList();
             foreach (var item in json)
             {
-                var use = item.Value.GetDictItem("use").AsString();
-                var asset = item.Value.GetDictItem("asset").AsString();
-                var value = item.Value.GetDictItem("value").AsString();
-                if (use == "")
+                //var use = item.GetDictItem("vinTx").AsString();
+                var asset = item.GetDictItem("asset").AsString();
+                var value = item.GetDictItem("value").AsString();
+                //if (use == "")
                 {
                     if (count.ContainsKey(asset) == false)
                     {
@@ -48,10 +48,10 @@ namespace client
 
                     listUTXO.Items.Add(value + ":" + asset);
                 }
-                else
-                {
-                    listUTXO.Items.Add("[已花费]" + value + ":" + asset);
-                }
+                //else
+                //{
+                //    listUTXO.Items.Add("[已花费]" + value + ":" + asset);
+                //}
             }
             listMoney.Items.Clear();
             foreach (var m in count)

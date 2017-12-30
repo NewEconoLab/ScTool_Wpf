@@ -43,7 +43,7 @@
                 <TextBox x:Name="textAPI" Margin="0" TextWrapping="Wrap" Text="http://118.31.39.242:81/_api/" Grid.Column="1" VerticalAlignment="Center" Height="24" Grid.RowSpan="2" />
                 <Button Content="TestAPI" Margin="10" Grid.Row="1" Click="Button_Click_1"/>
                 <Label Content="transaction log API" Margin="0" Grid.Row="2" Grid.RowSpan="1" Grid.ColumnSpan="2"/>
-                <TextBox x:Name="textAPITran" Margin="0,0,2,0" Grid.Row="2" TextWrapping="Wrap" Text="http://118.31.39.242:20332/" Grid.Column="1" VerticalAlignment="Center" Height="24" Grid.RowSpan="2" />
+                <TextBox x:Name="textAPITran" Margin="0,0,2,0" Grid.Row="2" TextWrapping="Wrap" Text="http://47.96.168.8:81/api/testnet" Grid.Column="1" VerticalAlignment="Center" Height="24" Grid.RowSpan="2" />
                 <Button Content="TestAPI" Margin="10" Grid.Row="3" Click="Button_Click_2"/>
             </Grid>
         </GroupBox>

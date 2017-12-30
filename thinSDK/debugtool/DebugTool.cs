@@ -45,18 +45,18 @@ namespace ThinNeo.Debug
             byte[] info = HexString2Bytes(transid);
             var filename = "0x" + ToHexString(info);
 
-            var tranfile = System.IO.Path.Combine(_pathlog, filename + ".fulllog.7z");
+            var tranfile = System.IO.Path.Combine(_pathlog, filename + ".llvmhex.txt");
 
 
             if (System.IO.File.Exists(tranfile) == false)
             {
                 throw new Exception("load file error");
             }
-            using (var ms = new System.IO.MemoryStream(System.IO.File.ReadAllBytes(tranfile)))
+            var str = System.IO.File.ReadAllText(tranfile);
+            var bts = ThinNeo.Helper.HexString2Bytes(str);
+            using (var ms = new System.IO.MemoryStream(bts))
             {
-                SevenZip.SevenZipExtractor e7z = new SevenZip.SevenZipExtractor(ms);
-                var outms = new System.IO.MemoryStream();
-                e7z.ExtractFile(0, outms);
+                var outms = llvm.QuickFile.FromFile(ms);
                 var text = System.Text.Encoding.UTF8.GetString(outms.ToArray());
                 var json = MyJson.Parse(text) as MyJson.JsonNode_Object;
                 fullLog = SmartContract.Debug.FullLog.FromJson(json);

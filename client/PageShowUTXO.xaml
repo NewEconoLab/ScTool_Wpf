@@ -19,7 +19,7 @@
             <RowDefinition Height="113*"/>
         </Grid.RowDefinitions>
         <Label Content="UTXO API地址" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="texturl" HorizontalAlignment="Left" Height="23" Margin="129,10,0,0" TextWrapping="Wrap" Text="http://118.31.39.242:20666/" VerticalAlignment="Top" Width="200"/>
+        <TextBox x:Name="texturl" HorizontalAlignment="Left" Height="23" Margin="129,10,0,0" TextWrapping="Wrap" Text="http://47.96.168.8:81/api/testnet" VerticalAlignment="Top" Width="200"/>
         <Button Content="得到服务器同步高度" HorizontalAlignment="Left" Margin="25,49,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click_1"/>
         <Button Content="得到所有资产列表" HorizontalAlignment="Left" Margin="25,73,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click_2"/>
         <Button Content="得到UTXO" HorizontalAlignment="Left" Margin="25,97,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click"/>
