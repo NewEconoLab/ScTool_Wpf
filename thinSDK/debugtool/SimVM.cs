@@ -210,7 +210,12 @@ namespace ThinNeo.Debug
             {
                 if (op.op == VM.OpCode.APPCALL)//不造成栈影响，由目标script影响
                 {
-                    ExecuteScript(runstate, op.subScript);
+                    var _script = op.subScript;
+                    if (op.subScript == null)
+                    {
+                        _script = new SmartContract.Debug.LogScript(runstate.CalcStack.Peek().strvalue);
+                    }
+                    ExecuteScript(runstate, _script);
                     mapState[op] = runstate.StateID;
                 }
                 else if (op.op == VM.OpCode.CALL)//不造成栈影响 就是个jmp
