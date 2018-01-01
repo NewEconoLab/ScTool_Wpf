@@ -106,7 +106,7 @@ namespace ThinNeo
         public TransactionAttributeUsage usage;
         public byte[] data;
     }
-    public class Fixed8
+    public struct Fixed8
     {
         const ulong D = 100000000;
         ulong value;
@@ -468,6 +468,8 @@ namespace ThinNeo
                 msg = ms.ToArray();
             }
             bool bsign = ThinNeo.Helper.VerifySignature(msg, signdata, pubkey);
+            if (bsign == false)
+                throw new Exception("wrong sign");
             var hash = ThinNeo.Helper.GetScriptFromPublicKey(pubkey);
             var addr = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
             if (addr != addrs)

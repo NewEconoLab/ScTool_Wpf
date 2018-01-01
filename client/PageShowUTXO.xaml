@@ -10,38 +10,51 @@
 
     <Grid Background="#FFE5E5E5" Margin="0,0,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="363*"/>
-            <ColumnDefinition Width="340*"/>
+            <ColumnDefinition Width="58*"/>
+            <ColumnDefinition Width="51*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
-            <RowDefinition Height="137*"/>
-            <RowDefinition Height="189*"/>
-            <RowDefinition Height="198*"/>
+            <RowDefinition Height="74*"/>
+            <RowDefinition Height="102*"/>
+            <RowDefinition Height="107*"/>
         </Grid.RowDefinitions>
         <Label Content="UTXO API地址" HorizontalAlignment="Left" Margin="56,5,0,0" VerticalAlignment="Top" Height="25" Width="90"/>
-        <TextBox x:Name="texturl" HorizontalAlignment="Left" Height="23" Margin="183,5,0,0" TextWrapping="Wrap" Text="http://47.96.168.8:81/api/testnet" VerticalAlignment="Top" Width="200"/>
-        <Button Content="得到服务器同步高度" HorizontalAlignment="Left" Margin="25,4,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click_1" Height="19" Grid.Row="1"/>
-        <Button Content="得到UTXO" HorizontalAlignment="Left" Margin="25,35,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click" Height="19" Grid.Row="1"/>
-        <TextBox x:Name="textaddress" HorizontalAlignment="Left" Height="23" Margin="173,35,0,0" TextWrapping="Wrap" Text="AYX8yqcvQroV9mJ5k4Ez2gro8Kjh7B78kD" VerticalAlignment="Top" Width="282" Grid.Row="1"/>
-        <ListBox x:Name="listUTXO" Margin="0" Grid.Row="2" Grid.RowSpan="1" Grid.Column="1"/>
-        <ListBox x:Name="listMoney" Margin="0" Grid.Row="3" Grid.RowSpan="1" Grid.Column="1"/>
-        <Label x:Name="labelHeight" Content="Label" HorizontalAlignment="Left" Margin="183,1,0,0" VerticalAlignment="Top" Height="25" Width="40" Grid.Row="1"/>
-        <TextBox x:Name="wifText" Grid.Column="1" HorizontalAlignment="Left" Height="48" Margin="97,8,0,0" TextWrapping="Wrap" Text="L13wAkUX1SAx6K9zztkS8RjxDMedBEzbtgZSZRYKUUBMP23BEgLM" VerticalAlignment="Top" Width="333" SpellCheck.IsEnabled="True"/>
-        <Label Content="输入wif在这里" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Grid.Column="1" Height="25" Width="87"/>
+
+        <GroupBox Header="UTXO信息"  Margin="0" Grid.Row="2" Grid.RowSpan="1" Grid.Column="1">
+            <ListBox x:Name="listUTXO"/>
+
+        </GroupBox>
+        <GroupBox Header="余额" Margin="0" Grid.Row="3" Grid.Column="1">
+            <ListBox x:Name="listMoney" />
+        </GroupBox>
+
+        <GroupBox Header="打开地址"  Grid.Row="1">
+            <Grid>
+                <TextBox x:Name="textaddress" IsReadOnly="True" Height="23" Margin="218,50,10,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
+                <Label x:Name="labelHeight" Content="Label" HorizontalAlignment="Left" Margin="142,48,0,0" VerticalAlignment="Top" Height="25" Width="105"/>
+                <Label Content="输入wif在这里" HorizontalAlignment="Left" VerticalAlignment="Top" Height="25" Width="87"/>
+                <Button Content="1.使用这个WIF" HorizontalAlignment="Left" Margin="12,25,0,0" VerticalAlignment="Top" Width="112" RenderTransformOrigin="0.267,0.211" Click="Button_Click_2" Height="19"/>
+                <TextBox x:Name="wifText" HorizontalAlignment="Left" Height="48" Margin="167,0,0,0" TextWrapping="Wrap" Text="L13wAkUX1SAx6K9zztkS8RjxDMedBEzbtgZSZRYKUUBMP23BEgLM" VerticalAlignment="Top" Width="333" SpellCheck.IsEnabled="True"/>
+                <Button Content="2.得到UTXO" HorizontalAlignment="Left" Margin="12,97,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click" Height="19"/>
+                <Button Content="得到服务器同步高度" HorizontalAlignment="Left" Margin="12,49,0,0" VerticalAlignment="Top" Width="125" Click="Button_Click_1" Height="19"/>
+            </Grid>
+        </GroupBox>
         <TextBox x:Name="texturl_node" HorizontalAlignment="Left" Height="23" Margin="183,33,0,0" TextWrapping="Wrap" Text="http://47.96.168.8:20332" VerticalAlignment="Top" Width="200"/>
         <Label  Content="Node RPC地址" HorizontalAlignment="Left" Margin="64,30,0,0" VerticalAlignment="Top" Height="25" Width="93"/>
-        <ListBox x:Name="listInfo" Grid.Column="1" Margin="0" Grid.Row="1"/>
-        <Button Content="分析" Grid.Column="1" HorizontalAlignment="Left" Margin="17,38,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.267,0.211" Click="Button_Click_2" Height="19"/>
-        <TextBox x:Name="textTran" HorizontalAlignment="Left" Height="95" Margin="25,92,0,0" Grid.Row="2" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="430"/>
-        <Button Content="创建转账合约" HorizontalAlignment="Left" Margin="25,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100" Click="Button_Click_3" Height="19"/>
+        <GroupBox Header="地址信息" Grid.Column="1" Margin="0" Grid.Row="1">
+            <ListBox x:Name="listInfo" />
+        </GroupBox>
+        <TextBox x:Name="textTran" HorizontalAlignment="Left" Height="112" Margin="10,92,0,0" Grid.Row="2" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="502"/>
+        <Button Content="3.创建转账合约" HorizontalAlignment="Left" Margin="25,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="100" Click="Button_Click_3" Height="19"/>
         <TextBox x:Name="textaddressTo" HorizontalAlignment="Left" Height="23" Margin="186,10,0,0" TextWrapping="Wrap" Text="ARPPoLhqsEuEAEeMUXsULEYm6qHys1G6ce" VerticalAlignment="Top" Width="282" Grid.Row="2"/>
         <ComboBox x:Name="comboUtxo" HorizontalAlignment="Left" Margin="335,38,0,0" Grid.Row="2" VerticalAlignment="Top" Width="120" Height="21"/>
         <Label Content="目标地址" HorizontalAlignment="Left" Margin="123,10,0,0" Grid.Row="2" VerticalAlignment="Top" Height="25" Width="58"/>
         <Label Content="使用哪个UTXO" HorizontalAlignment="Left" Margin="123,35,0,0" Grid.Row="2" VerticalAlignment="Top" Height="25" Width="91"/>
         <TextBox x:Name="textTrans" HorizontalAlignment="Left" Height="23" Margin="335,64,0,0" Grid.Row="2" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="120"/>
         <Label Content="转账数量" HorizontalAlignment="Left" Margin="123,64,0,0" Grid.Row="2" VerticalAlignment="Top" Height="25" Width="58"/>
-        <Button Content="signit" HorizontalAlignment="Left" Margin="25,5,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" Height="19" Click="Button_Click_4"/>
-        <ListBox x:Name="listSign" HorizontalAlignment="Left" Height="100" Margin="25,29,0,0" Grid.Row="3" VerticalAlignment="Top" Width="430"/>
+        <Button Content="4.signit" HorizontalAlignment="Left" Margin="25,45,0,0" Grid.Row="2" VerticalAlignment="Top" Width="75" Height="19" Click="Button_Click_4"/>
+        <TextBox x:Name="texturl" HorizontalAlignment="Left" Height="23" Margin="183,7,0,0" TextWrapping="Wrap" Text="http://47.96.168.8:81/api/testnet" VerticalAlignment="Top" Width="200"/>
+        <Button Content="5.广播交易 SendRaw" HorizontalAlignment="Left" Margin="25,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="156" Click="Button_Click_5"/>
     </Grid>
 </Page>

@@ -26,10 +26,10 @@ namespace client
         }
         public class UTXO
         {
-            public string txid;
+            public byte[] txid;
             public int n;
-            public string asset;
-            public UInt64 value;
+            public byte[] asset;
+            public ThinNeo.Fixed8 value;
             public override string ToString()
             {
                 return asset + ":" + value;
@@ -48,23 +48,31 @@ namespace client
 
             var str = MakeRpcUrl(this.texturl.Text, "getutxo", new MyJson.JsonNode_ValueString(textaddress.Text));
             var result = await wc.DownloadStringTaskAsync(str);
-            var json = MyJson.Parse(result).AsDict()["result"].AsList();
+            var json1 = MyJson.Parse(result).AsDict();
+            if (json1.ContainsKey("error"))
+                return;
+            var json = json1["result"].AsList();
             foreach (var item in json)
             {
                 UTXO txio = new UTXO();
                 //var use = item.GetDictItem("vinTx").AsString();
-                txio.txid = item.GetDictItem("txid").AsString();
+                var hextxid = item.GetDictItem("txid").AsString();
+                txio.txid = ThinNeo.Helper.HexString2Bytes(hextxid).Reverse().ToArray();
+
                 txio.n = item.GetDictItem("n").AsInt();
-                txio.asset = item.GetDictItem("asset").AsString();
+
+                var hexasset = item.GetDictItem("asset").AsString();
+                txio.asset = ThinNeo.Helper.HexString2Bytes(hexasset).Reverse().ToArray();
+                var coolasset = ThinNeo.Helper.Bytes2HexString(txio.asset);
                 var value = decimal.Parse(item.GetDictItem("value").AsString());
-                txio.value = (ulong)((decimal)value * 100000000);
+                txio.value = value;
                 //if (use == "")
                 {
-                    if (count.ContainsKey(txio.asset) == false)
+                    if (count.ContainsKey(coolasset) == false)
                     {
-                        count[txio.asset] = 0;
+                        count[coolasset] = 0;
                     }
-                    count[txio.asset] += value;
+                    count[coolasset] += value;
 
                     listUTXO.Items.Add(txio.txid + "[" + txio.n + "] " + value + ":" + txio.asset);
                     comboUtxo.Items.Add(txio);
@@ -136,44 +144,77 @@ namespace client
         ThinNeo.Transaction lastTran;
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
+            textTran.Text = "";
+            var utxo = comboUtxo.SelectedItem as UTXO;
+            if (utxo == null)
+                return;
+            var valuecount = utxo.value;
+            decimal eat = decimal.Parse(textTrans.Text);
+            var left = valuecount - eat;
+            if (left < 0)
+            {
+                MessageBox.Show("钱不够");
+                return;
+            }
             lastTran = new ThinNeo.Transaction();
             lastTran.type = ThinNeo.TransactionType.ContractTransaction;//转账
             lastTran.attributes = new ThinNeo.Attribute[0];
             lastTran.inputs = new ThinNeo.TransactionInput[1];
-            var utxo = comboUtxo.SelectedItem as UTXO;
             lastTran.inputs[0] = new ThinNeo.TransactionInput();
-            lastTran.inputs[0].hash = ThinNeo.Helper.HexString2Bytes(utxo.txid);//吃掉一个utxo
+            lastTran.inputs[0].hash = utxo.txid;//吃掉一个utxo
             lastTran.inputs[0].index = (ushort)utxo.n;
-            var valuecount = utxo.value;
-            ulong eat = ulong.Parse(textTrans.Text);
+
             lastTran.outputs = new ThinNeo.TransactionOutput[2];
             lastTran.outputs[0] = new ThinNeo.TransactionOutput();//给对方转账
-            lastTran.outputs[0].assetId = ThinNeo.Helper.HexString2Bytes(utxo.asset);
+            lastTran.outputs[0].assetId = utxo.asset;
             lastTran.outputs[0].toAddress = ThinNeo.Helper.GetPublicKeyHashFromAddress(textaddressTo.Text);
             lastTran.outputs[0].value = eat;
             lastTran.outputs[1] = new ThinNeo.TransactionOutput();//给自己找零
-            lastTran.outputs[1].assetId = ThinNeo.Helper.HexString2Bytes(utxo.asset);
+            lastTran.outputs[1].assetId = utxo.asset;
             lastTran.outputs[1].toAddress = ThinNeo.Helper.GetPublicKeyHashFromAddress(textaddress.Text);
             lastTran.outputs[1].value = valuecount - eat;
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            lastTran.SerializeUnsigned(ms);
-            textTran.Text = ThinNeo.Helper.Bytes2HexString(ms.ToArray());
-            ms.Close();
-
+            using (var ms = new System.IO.MemoryStream())
+            {
+                lastTran.SerializeUnsigned(ms);
+                textTran.Text = ThinNeo.Helper.Bytes2HexString(ms.ToArray());
+            }
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
-            lastTran.SerializeUnsigned(ms);
-            byte[] sign = ThinNeo.Helper.Sign(ms.ToArray(), prikey);
-            ms.Close();
-            listSign.Items.Clear();
-            listSign.Items.Add("sign=" + ThinNeo.Helper.Bytes2HexString(sign));
+            if (lastTran == null)
+                return;
+            byte[] sign = null;
+
+            using (var ms = new System.IO.MemoryStream())
+            {
+                lastTran.SerializeUnsigned(ms);
+                sign = ThinNeo.Helper.Sign(ms.ToArray(), prikey);
+                ms.Close();
+            }
             var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
 
             var addr = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-            lastTran.AddWitness(sign, ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey), addr);
+            lastTran.witnesses = null;
+            lastTran.AddWitness(sign, pubkey, addr);
+            using (var ms = new System.IO.MemoryStream())
+            {
+                lastTran.Serialize(ms);
+                textTran.Text = ThinNeo.Helper.Bytes2HexString(ms.ToArray());
+            }
+        }
+
+        private async void Button_Click_5(object sender, RoutedEventArgs e)
+        {
+            if (lastTran == null || lastTran.witnesses == null || lastTran.witnesses.Length == 0)
+                return;
+            System.Net.WebClient wc = new System.Net.WebClient();
+            var str = MakeRpcUrl(this.texturl_node.Text, "sendrawtransaction", new MyJson.JsonNode_ValueString(textTran.Text));
+            var result = await wc.DownloadStringTaskAsync(str);
+
+            MessageBox.Show(result);
+
+
         }
 
         //private async void Button_Click_2(object sender, RoutedEventArgs e)

@@ -21,7 +21,7 @@
             <TabItem Header="Debug smartcontract transaction">
                 <Frame Content="Frame" Margin="0" Source="/client;component/PageContractDebug.xaml"/>
             </TabItem>
-            <TabItem Header="Find UTXO"  >
+            <TabItem Header="NEL Thin Wallet"  >
                 <Frame Content="Frame" Source="/client;component/PageShowUTXO.xaml"></Frame>
             </TabItem>
         </TabControl>

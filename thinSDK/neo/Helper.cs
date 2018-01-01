@@ -237,7 +237,7 @@ namespace ThinNeo
             using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
             {
                 var hash = sha256.ComputeHash(message);
-                return ecdsa.SignHash(message);
+                return ecdsa.SignHash(hash);
             }
         }
 
@@ -253,7 +253,7 @@ namespace ThinNeo
             using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
             {
                 var hash = sha256.ComputeHash(message);
-                return ecdsa.VerifyHash(message, signature);
+                return ecdsa.VerifyHash(hash, signature);
             }
         }
     }
