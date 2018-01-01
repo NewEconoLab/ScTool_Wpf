@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace ThinNeo
 {
@@ -105,10 +106,42 @@ namespace ThinNeo
         public TransactionAttributeUsage usage;
         public byte[] data;
     }
+    public class Fixed8
+    {
+        const ulong D = 100000000;
+        ulong value;
+        public Fixed8(ulong lv)
+        {
+            this.value = lv;
+        }
+        public static implicit operator decimal(Fixed8 value)
+        {
+            return value.value / (decimal)D;
+        }
+        public static implicit operator Fixed8(decimal value)
+        {
+            return new Fixed8((ulong)(value * (decimal)D));
+        }
+        public byte[] toBytes()
+        {
+            return BitConverter.GetBytes(value);
+        }
+        public static Fixed8 FromBytes(byte[] data, int pos)
+        {
+            ulong value = BitConverter.ToUInt64(data, pos);
+            return new Fixed8(value);
+        }
+        public override string ToString()
+        {
+            decimal num = this;
+            return num.ToString();
+        }
+    }
+
     public struct TransactionOutput
     {
         public byte[] assetId;
-        public UInt64 value;
+        public Fixed8 value;
         public byte[] toAddress;
     }
     public class TransactionInput
@@ -116,6 +149,22 @@ namespace ThinNeo
         public byte[] hash;
         public UInt16 index;
     }
+    public class Witness
+    {
+        public byte[] InvocationScript;//设置参数脚本，通常是吧signdata push进去
+        public byte[] VerificationScript;//校验脚本，通常是 push 公钥, CheckSig 两条指令   验证的东西就是未签名的交易
+        //这个就是地址的脚本
+        public string Address
+        {
+            get
+            {
+                var hash = ThinNeo.Helper.GetScriptHashFromScript(VerificationScript);
+                return ThinNeo.Helper.GetAddressFromScriptHash(hash);
+            }
+        }
+
+    }
+
 
     public class Transaction
     {
@@ -124,93 +173,87 @@ namespace ThinNeo
         public Attribute[] attributes;
         public TransactionInput[] inputs;
         public TransactionOutput[] outputs;
-        public byte[] ToBytes()
+        public Witness[] witnesses;//见证人
+        public void SerializeUnsigned(System.IO.Stream writer)
         {
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
             //write type
-            ms.WriteByte((byte)type);
-
+            writer.WriteByte((byte)type);
             //write version
-            ms.WriteByte(version);
-
+            writer.WriteByte(version);
+            //SerializeExclusiveData(writer);
             if (type == TransactionType.ContractTransaction)//每个交易类型有一些自己独特的处理
             {
-                //ContractTransaction 就是最常见的合约交易，
+                //ContractTransaction 就是最常见的转账交易
                 //他没有自己的独特处理
-
             }
-            else
-            {
-                throw new Exception("未编写针对这个交易类型的代码");
-            }
-            //write attributes
+            #region write attribute
             var countAttributes = (uint)attributes.Length;
-            writeVarInt(ms, countAttributes);
+            writeVarInt(writer, countAttributes);
             for (var i = 0; i < countAttributes; i++)
             {
                 byte[] attributeData = attributes[i].data;
                 var Usage = attributes[i].usage;
-                ms.WriteByte((byte)Usage);
+                writer.WriteByte((byte)Usage);
                 if (Usage == TransactionAttributeUsage.ContractHash || Usage == TransactionAttributeUsage.Vote || (Usage >= TransactionAttributeUsage.Hash1 && Usage <= TransactionAttributeUsage.Hash15))
                 {
                     //attributeData =new byte[32];
-                    ms.Write(attributeData, 0, 32);
+                    writer.Write(attributeData, 0, 32);
                 }
                 else if (Usage == TransactionAttributeUsage.ECDH02 || Usage == TransactionAttributeUsage.ECDH03)
                 {
                     //attributeData = new byte[33];
                     //attributeData[0] = (byte)Usage;
-                    ms.Write(attributeData, 1, 32);
+                    writer.Write(attributeData, 1, 32);
                 }
                 else if (Usage == TransactionAttributeUsage.Script)
                 {
                     //attributeData = new byte[20];
 
-                    ms.Write(attributeData, 0, 20);
+                    writer.Write(attributeData, 0, 20);
                 }
                 else if (Usage == TransactionAttributeUsage.DescriptionUrl)
                 {
                     //var len = (byte)ms.ReadByte();
                     //attributeData = new byte[len];
                     var len = attributeData.Length;
-                    ms.WriteByte((byte)len);
-                    ms.Write(attributeData, 0, len);
+                    writer.WriteByte((byte)len);
+                    writer.Write(attributeData, 0, len);
                 }
                 else if (Usage == TransactionAttributeUsage.Description || Usage >= TransactionAttributeUsage.Remark)
                 {
                     //var len = (int)readVarInt(ms, 65535);
                     //attributeData = new byte[len];
                     var len = (int)attributeData.Length;
-                    writeVarInt(ms, (uint)len);
-                    ms.Write(attributeData, 0, len);
+                    writeVarInt(writer, (uint)len);
+                    writer.Write(attributeData, 0, len);
                 }
                 else
                     throw new FormatException();
             }
-
-            //input
+            #endregion
+            #region write Input
             var countInputs = (uint)inputs.Length;
-            writeVarInt(ms, countInputs);
-            for(var i=0;i<countInputs;i++)
+            writeVarInt(writer, countInputs);
+            for (var i = 0; i < countInputs; i++)
             {
-                ms.Write(inputs[i].hash, 0, 32);
+                writer.Write(inputs[i].hash, 0, 32);
                 var buf = BitConverter.GetBytes(inputs[i].index);
-                ms.Write(buf,0,2);
+                writer.Write(buf, 0, 2);
             }
-
-            //output
+            #endregion
+            #region write Outputs
             var countOutputs = (uint)outputs.Length;
-            writeVarInt(ms, countOutputs);
+            writeVarInt(writer, countOutputs);
             for (var i = 0; i < countOutputs; i++)
             {
                 var item = outputs[i];
                 //资产种类
-                ms.Write(item.assetId, 0, 32);
+                writer.Write(item.assetId, 0, 32);
 
                 //Int64 value = 0; //钱的数字是一个定点数，乘以D 
                 //Int64 D = 100000000;
-                byte[] buf = BitConverter.GetBytes(item.value);
-                ms.Write(buf, 0, 8);
+                byte[] buf = item.value.toBytes();
+                writer.Write(buf, 0, 8);
                 //value = BitConverter.ToInt64(buf, 0);
 
 
@@ -220,10 +263,27 @@ namespace ThinNeo
                 //资产数量
 
                 //目标地址
-                ms.Write(item.toAddress,0,20);
+                writer.Write(item.toAddress, 0, 20);
 
             }
-            return ms.ToArray();
+            #endregion
+        }
+        public void Serialize(System.IO.Stream writer)
+        {
+            this.SerializeUnsigned(writer);
+
+            #region write witnesses
+            var witnesscount = (ulong)witnesses.Length;
+            writeVarInt(writer, witnesscount);
+            for (var i = 0; i < (int)witnesscount; i++)
+            {
+                var _witness = this.witnesses[i];
+                writeVarInt(writer, (ulong)_witness.InvocationScript.Length);
+                writer.Write(_witness.InvocationScript, 0, _witness.InvocationScript.Length);
+                writeVarInt(writer, (ulong)_witness.VerificationScript.Length);
+                writer.Write(_witness.VerificationScript, 0, _witness.VerificationScript.Length);
+            }
+            #endregion
         }
         public static Transaction FromBytes(byte[] data)
         {
@@ -324,15 +384,10 @@ namespace ThinNeo
                 ms.Read(assetid, 0, 32);
                 assetid = assetid.Reverse().ToArray();//反转
 
-                UInt64 value = 0; //钱的数字是一个定点数，乘以D 
-                Int64 D = 100000000;
+
                 byte[] buf = new byte[8];
                 ms.Read(buf, 0, 8);
-                value = BitConverter.ToUInt64(buf, 0);
-
-                decimal number = ((decimal)value / (decimal)D);
-                if (number <= 0)
-                    throw new FormatException();
+                var value = Fixed8.FromBytes(buf, 0);
                 //资产数量
 
                 var scripthash = new byte[20];
@@ -346,7 +401,7 @@ namespace ThinNeo
 
                 tdata.outputs[i] = outp;
 
-                Console.WriteLine("   output" + i + ":" + Helper.Bytes2HexString(assetid) + "=" + number);
+                Console.WriteLine("   output" + i + ":" + Helper.Bytes2HexString(assetid) + "=" + value);
 
                 Console.WriteLine("       address:" + address);
             }
@@ -402,6 +457,47 @@ namespace ThinNeo
                 value = fb;
             if (value > max) throw new Exception("to large.");
             return value;
+        }
+
+        public void AddWitness(byte[] signdata, byte[] pubkey, string addrs)
+        {
+            byte[] msg = null;
+            using (var ms = new System.IO.MemoryStream())
+            {
+                SerializeUnsigned(ms);
+                msg = ms.ToArray();
+            }
+            bool bsign = ThinNeo.Helper.VerifySignature(msg, signdata, pubkey);
+            var hash = ThinNeo.Helper.GetScriptFromPublicKey(pubkey);
+            var addr = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+            if (addr != addrs)
+                throw new Exception("wrong script");
+            List<Witness> wit = null;
+            if (witnesses == null)
+            {
+                wit = new List<Witness>();
+            }
+            else
+            {
+                wit = new List<Witness>(witnesses);
+            }
+            foreach (var w in wit)
+            {
+                if (w.Address == addr)
+                    throw new Exception("alread have this witness");
+            }
+            Witness newwit = new Witness();
+            newwit.VerificationScript = new byte[pubkey.Length + 2];
+            newwit.VerificationScript[0] = (byte)pubkey.Length;
+            Array.Copy(pubkey, 0, newwit.VerificationScript, 1, pubkey.Length);
+            newwit.VerificationScript[newwit.VerificationScript.Length - 1] = 0xac;//checksig code
+
+            //make push signdata
+            newwit.InvocationScript = new byte[signdata.Length + 1];
+            newwit.InvocationScript[0] = (byte)signdata.Length;
+            Array.Copy(signdata, 0, newwit.InvocationScript, 1, signdata.Length);
+            wit.Add(newwit);
+            witnesses = wit.ToArray();
         }
     }
 }
