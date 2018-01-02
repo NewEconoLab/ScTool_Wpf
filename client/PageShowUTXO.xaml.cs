@@ -32,7 +32,7 @@ namespace client
             public ThinNeo.Fixed8 value;
             public override string ToString()
             {
-                return asset + ":" + value;
+                return value + "[" + ThinNeo.Helper.Bytes2HexString(asset) + "]";
             }
         }
         List<UTXO> utxos = new List<UTXO>();
@@ -74,7 +74,7 @@ namespace client
                     }
                     count[coolasset] += value;
 
-                    listUTXO.Items.Add(txio.txid + "[" + txio.n + "] " + value + ":" + txio.asset);
+                    listUTXO.Items.Add(txio.txid + "[" + txio.n + "] " + value + ":" + ThinNeo.Helper.Bytes2HexString(txio.asset));
                     comboUtxo.Items.Add(txio);
                 }
                 utxos.Add(txio);
