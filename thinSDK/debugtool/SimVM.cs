@@ -65,6 +65,12 @@ namespace ThinNeo.Debug
                 StateID++;
                 return true;
             }
+            if(op==VM.OpCode.ROLL)
+            {
+                int n = (int)CalcStack.Pop().AsInt();
+                CalcStack.Push(CalcStack.Remove(n));
+                return true;
+            }
             return false;
         }
         public void CalcCalcStack(SmartContract.Debug.Op stackop, SmartContract.Debug.StackItem item)
