@@ -73,7 +73,7 @@ namespace client
             if(transid!="0x00")
             {//download and write debugfile
                 var filename = System.IO.Path.Combine(pathLog, transid + ".llvmhex.txt");
-                var url = textAPITran.Text + "?jsonrpc=2.0&id=1&method=getfullloginfo&params=[%22" + transid + "%22]";
+                var url = textAPITran.Text + "?jsonrpc=2.0&id=1&method=getfulllog&params=[%22" + transid + "%22]";
                 var rtnstr = wc.DownloadString(url);
                 var json = MyJson.Parse(rtnstr).AsDict();
                 if(json.ContainsKey("result")==false)
@@ -81,7 +81,7 @@ namespace client
                     MessageBox.Show("找不到此交易的智能合约log。Can not find fullloginfo for this transaction.");
                     return;
                 }
-                var txt = json["result"].AsString();//.AsList()[0].AsDict()["fulllog7z"].AsString();
+                var txt = json["result"].AsList()[0].AsDict()["fulllog7z"].AsString();
                 System.IO.File.WriteAllText(filename, txt);
             }
 
