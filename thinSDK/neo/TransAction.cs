@@ -165,6 +165,40 @@ namespace ThinNeo
 
     }
 
+    public interface IExtData
+    {
+        void Serialize(Transaction trans, System.IO.Stream writer);
+        void Deserialize(Transaction trans, System.IO.Stream reader);
+    }
+
+    public class InvokeTransData : IExtData
+    {
+        byte[] script;
+        Fixed8 gas;
+        public void Deserialize(Transaction trans, Stream reader)
+        {
+            var slen = Transaction.readVarInt(reader);
+            script = new byte[slen];
+            reader.Read(script, 0, (int)slen);
+            if(trans.version>=1)
+            {
+                var bs = new byte[8];
+                reader.Read(bs, 0, 8);
+                gas = new Fixed8(BitConverter.ToUInt64(bs, 0));
+            }
+        }
+
+        public void Serialize(Transaction trans, Stream writer)
+        {
+            Transaction.writeVarInt(writer, (ulong)script.Length);
+            writer.Write(script, 0, script.Length);
+            if (trans.version >= 1)
+            {
+                var bs = gas.toBytes();
+                writer.Write(bs, 0, 8);
+            }
+        }
+    }
 
     public class Transaction
     {
@@ -185,6 +219,10 @@ namespace ThinNeo
             {
                 //ContractTransaction 就是最常见的转账交易
                 //他没有自己的独特处理
+            }
+            else
+            {
+                extdata.Serialize(this,writer);
             }
             #region write attribute
             var countAttributes = (uint)attributes.Length;
@@ -285,9 +323,10 @@ namespace ThinNeo
             }
             #endregion
         }
-        public static Transaction FromBytes(byte[] data)
+        public IExtData extdata;
+
+        public void Deserialize(System.IO.Stream ms)
         {
-            Transaction tdata = null;
             //参考源码来自
             //      https://github.com/neo-project/neo
             //      Transaction.cs
@@ -298,25 +337,29 @@ namespace ThinNeo
             //      Transaction.ts
             //      采用typescript开发
 
-            System.IO.MemoryStream ms = new System.IO.MemoryStream(data);
-
-            tdata.type = (TransactionType)ms.ReadByte();//读一个字节，交易类型
-            Console.WriteLine("datatype:" + tdata.type);
-            byte version = (byte)ms.ReadByte();
-            Console.WriteLine("dataver:" + version);
-
-            if (tdata.type == TransactionType.ContractTransaction)//每个交易类型有一些自己独特的处理
+            this.type = (TransactionType)ms.ReadByte();//读一个字节，交易类型
+            this.version = (byte)ms.ReadByte();
+            if (this.type == TransactionType.ContractTransaction)//每个交易类型有一些自己独特的处理
             {
                 //ContractTransaction 就是最常见的合约交易，
                 //他没有自己的独特处理
+                extdata = null;
+            }
+            else if (this.type == TransactionType.InvocationTransaction)
+            {
+                extdata = new InvokeTransData();
             }
             else
             {
                 throw new Exception("未编写针对这个交易类型的代码");
             }
-
+            if (extdata != null)
+            {
+                extdata.Deserialize(this,ms);
+            }
             //attributes
             var countAttributes = readVarInt(ms);
+            this.attributes = new Attribute[countAttributes];
             Console.WriteLine("countAttributes:" + countAttributes);
             for (UInt64 i = 0; i < countAttributes; i++)
             {
@@ -358,16 +401,16 @@ namespace ThinNeo
             //inputs  输入表示基于哪些交易
             var countInputs = readVarInt(ms);
             Console.WriteLine("countInputs:" + countInputs);
+            this.inputs = new TransactionInput[countInputs];
             for (UInt64 i = 0; i < countInputs; i++)
             {
-                byte[] hash = new byte[32];
+                this.inputs[i] = new TransactionInput();
+                this.inputs[i].hash = new byte[32];
                 byte[] buf = new byte[2];
-                ms.Read(hash, 0, 32);
+                ms.Read(this.inputs[i].hash, 0, 32);
                 ms.Read(buf, 0, 2);
                 UInt16 index = (UInt16)(buf[1] * 256 + buf[0]);
-                hash = hash.Reverse().ToArray();//反转
-                var strhash = Helper.Bytes2HexString(hash);
-                Console.WriteLine("   input:" + strhash + "   index:" + index);
+                this.inputs[i].index = index;
             }
 
             //outputes 输出表示最后有哪几个地址得到多少钱，肯定有一个是自己的地址,因为每笔交易都会把之前交易的余额清空,刨除自己,就是要转给谁多少钱
@@ -375,15 +418,14 @@ namespace ThinNeo
             //这个机制叫做UTXO
             var countOutputs = readVarInt(ms);
             Console.WriteLine("countOutputs:" + countOutputs);
-            tdata.outputs = new TransactionOutput[countOutputs];
+            this.outputs = new TransactionOutput[countOutputs];
             for (UInt64 i = 0; i < countOutputs; i++)
             {
-                TransactionOutput outp = new TransactionOutput();
+                this.outputs[i] = new TransactionOutput();
+                TransactionOutput outp = this.outputs[i];
                 //资产种类
                 var assetid = new byte[32];
                 ms.Read(assetid, 0, 32);
-                assetid = assetid.Reverse().ToArray();//反转
-
 
                 byte[] buf = new byte[8];
                 ms.Read(buf, 0, 8);
@@ -393,19 +435,13 @@ namespace ThinNeo
                 var scripthash = new byte[20];
 
                 ms.Read(scripthash, 0, 20);
-                var address = Helper.GetAddressFromScriptHash(scripthash);
                 outp.assetId = assetid;
-                //Helper.Bytes2HexString(assetid);
                 outp.value = value;
                 outp.toAddress = scripthash;
 
-                tdata.outputs[i] = outp;
+                this.outputs[i] = outp;
 
-                Console.WriteLine("   output" + i + ":" + Helper.Bytes2HexString(assetid) + "=" + value);
-
-                Console.WriteLine("       address:" + address);
             }
-            return tdata;
         }
         public static void writeVarInt(System.IO.Stream stream, UInt64 value)
         {
