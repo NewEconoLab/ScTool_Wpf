@@ -24,7 +24,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Security" />
-  </ItemGroup>
 </Project>

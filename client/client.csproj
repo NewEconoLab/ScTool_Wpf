@@ -62,16 +62,26 @@
     <Compile Include="Dialog Get Contract.xaml.cs">
       <DependentUpon>Dialog Get Contract.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialog Input password.xaml.cs">
+      <DependentUpon>Dialog Input password.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PageContractCompiler.xaml.cs">
       <DependentUpon>PageContractCompiler.xaml</DependentUpon>
     </Compile>
     <Compile Include="PageContractDebug.xaml.cs">
       <DependentUpon>PageContractDebug.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PageShowUTXO.xaml.cs">
+    <Compile Include="PageThinWallet.xaml.cs">
+      <DependentUpon>PageThinWallet.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="testpage\PageShowUTXO.xaml.cs">
       <DependentUpon>PageShowUTXO.xaml</DependentUpon>
     </Compile>
     <Page Include="Dialog Get Contract.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialog Input password.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -95,7 +105,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PageShowUTXO.xaml">
+    <Page Include="PageThinWallet.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="testpage\PageShowUTXO.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

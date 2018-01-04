@@ -22,7 +22,10 @@
                 <Frame Content="Frame" Margin="0" Source="/client;component/PageContractDebug.xaml"/>
             </TabItem>
             <TabItem Header="NEL Thin Wallet"  >
-                <Frame Content="Frame" Source="/client;component/PageShowUTXO.xaml"></Frame>
+                <Frame Content="Frame" Source="/client;component/PageThinWallet.xaml"></Frame>
+            </TabItem>
+            <TabItem Header="Show UTXO"  >
+                <Frame Content="Frame" Source="/client;component/testpage/PageShowUTXO.xaml"></Frame>
             </TabItem>
         </TabControl>
 
