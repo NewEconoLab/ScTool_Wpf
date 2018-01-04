@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using ThinNeo.Cryptography.Cryptography;
+using ThinNeo.Cryptography;
 
 namespace ThinNeo
 {
@@ -40,12 +41,12 @@ namespace ThinNeo
 
         public static byte[] GetPublicKeyFromPrivateKey(byte[] privateKey)
         {
-            var PublicKey = ThinNeo.Cryptography.Cryptography.ECC.ECCurve.Secp256r1.G * privateKey;
+            var PublicKey = ThinNeo.Cryptography.ECC.ECCurve.Secp256r1.G * privateKey;
             return PublicKey.EncodePoint(true);
         }
         public static byte[] GetPublicKeyFromPrivateKey_NoComp(byte[] privateKey)
         {
-            var PublicKey = ThinNeo.Cryptography.Cryptography.ECC.ECCurve.Secp256r1.G * privateKey;
+            var PublicKey = ThinNeo.Cryptography.ECC.ECCurve.Secp256r1.G * privateKey;
             return PublicKey.EncodePoint(false);//.Skip(1).ToArray();
         }
         public static byte[] GetScriptFromPublicKey(byte[] publicKey)
@@ -227,14 +228,25 @@ namespace ThinNeo
         {
             var Secp256r1_G = Helper.HexString2Bytes("04" + "6B17D1F2E12C4247F8BCE6E563A440F277037D812DEB33A0F4A13945D898C296" + "4FE342E2FE1A7F9B8EE7EB4A7C0F9E162BCE33576B315ECECBB6406837BF51F5");
 
-            var PublicKey = ThinNeo.Cryptography.Cryptography.ECC.ECCurve.Secp256r1.G * prikey;
+            var PublicKey = ThinNeo.Cryptography.ECC.ECCurve.Secp256r1.G * prikey;
             var pubkey = PublicKey.EncodePoint(false).Skip(1).ToArray();
             //#if NET461
             //const int ECDSA_PRIVATE_P256_MAGIC = 0x32534345;
-            byte[] first = { 0x45, 0x43, 0x53, 0x32, 0x20, 0x00, 0x00, 0x00 };
-            prikey = first.Concat(pubkey).Concat(prikey).ToArray();
-            using (System.Security.Cryptography.CngKey key = System.Security.Cryptography.CngKey.Import(prikey, System.Security.Cryptography.CngKeyBlobFormat.EccPrivateBlob))
-            using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
+            //byte[] first = { 0x45, 0x43, 0x53, 0x32, 0x20, 0x00, 0x00, 0x00 };
+            //prikey = first.Concat(pubkey).Concat(prikey).ToArray();
+            //using (System.Security.Cryptography.CngKey key = System.Security.Cryptography.CngKey.Import(prikey, System.Security.Cryptography.CngKeyBlobFormat.EccPrivateBlob))
+            //using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
+
+            using (var ecdsa = System.Security.Cryptography.ECDsa.Create(new System.Security.Cryptography.ECParameters
+            {
+                Curve = System.Security.Cryptography.ECCurve.NamedCurves.nistP256,
+                D = prikey,
+                Q = new System.Security.Cryptography.ECPoint
+                {
+                    X = pubkey.Take(32).ToArray(),
+                    Y = pubkey.Skip(32).ToArray()
+                }
+            }))
             {
                 var hash = sha256.ComputeHash(message);
                 return ecdsa.SignHash(hash);
@@ -243,17 +255,144 @@ namespace ThinNeo
 
         public static bool VerifySignature(byte[] message, byte[] signature, byte[] pubkey)
         {
-            var PublicKey = ThinNeo.Cryptography.Cryptography.ECC.ECPoint.DecodePoint(pubkey, ThinNeo.Cryptography.Cryptography.ECC.ECCurve.Secp256r1);
-            var usepk= PublicKey.EncodePoint(false).Skip(1).ToArray();
+            var PublicKey = ThinNeo.Cryptography.ECC.ECPoint.DecodePoint(pubkey, ThinNeo.Cryptography.ECC.ECCurve.Secp256r1);
+            var usepk = PublicKey.EncodePoint(false).Skip(1).ToArray();
 
-            byte[] first = { 0x45, 0x43, 0x53, 0x31, 0x20, 0x00, 0x00, 0x00 };
-            usepk = first.Concat(usepk).ToArray();
+            //byte[] first = { 0x45, 0x43, 0x53, 0x31, 0x20, 0x00, 0x00, 0x00 };
+            //usepk = first.Concat(usepk).ToArray();
 
-            using (System.Security.Cryptography.CngKey key = System.Security.Cryptography.CngKey.Import(usepk, System.Security.Cryptography.CngKeyBlobFormat.EccPublicBlob))
-            using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
+            //using (System.Security.Cryptography.CngKey key = System.Security.Cryptography.CngKey.Import(usepk, System.Security.Cryptography.CngKeyBlobFormat.EccPublicBlob))
+            //using (System.Security.Cryptography.ECDsaCng ecdsa = new System.Security.Cryptography.ECDsaCng(key))
+
+            using (var ecdsa = System.Security.Cryptography.ECDsa.Create(new System.Security.Cryptography.ECParameters
+            {
+                Curve = System.Security.Cryptography.ECCurve.NamedCurves.nistP256,
+                Q = new System.Security.Cryptography.ECPoint
+                {
+                    X = usepk.Take(32).ToArray(),
+                    Y = usepk.Skip(32).ToArray()
+                }
+            }))
             {
                 var hash = sha256.ComputeHash(message);
                 return ecdsa.VerifyHash(hash, signature);
+            }
+        }
+
+
+        public static string GetNep2FromPrivateKey(byte[] prikey, string passphrase)
+        {
+            var pubkey = Helper.GetPublicKeyFromPrivateKey(prikey);
+            var script_hash = Helper.GetPublicKeyHash(pubkey);
+
+            string address = Helper.GetAddressFromScriptHash(script_hash);
+
+            var b1 = Sha256(Encoding.ASCII.GetBytes(address));
+            var b2 = Sha256(b1);
+            byte[] addresshash = b2.Take(4).ToArray();
+            byte[] derivedkey = SCrypt.DeriveKey(Encoding.UTF8.GetBytes(passphrase), addresshash, 16384, 8, 8, 64);
+            byte[] derivedhalf1 = derivedkey.Take(32).ToArray();
+            byte[] derivedhalf2 = derivedkey.Skip(32).ToArray();
+            var xorinfo = XOR(prikey, derivedhalf1);
+            byte[] encryptedkey = AES256Encrypt(xorinfo, derivedhalf2);
+            byte[] buffer = new byte[39];
+            buffer[0] = 0x01;
+            buffer[1] = 0x42;
+            buffer[2] = 0xe0;
+            Buffer.BlockCopy(addresshash, 0, buffer, 3, addresshash.Length);
+            Buffer.BlockCopy(encryptedkey, 0, buffer, 7, encryptedkey.Length);
+            return Base58CheckEncode(buffer);
+        }
+        public static byte[] GetPrivateKeyFromNEP2(string nep2, string passphrase)
+        {
+            if (nep2 == null) throw new ArgumentNullException(nameof(nep2));
+            if (passphrase == null) throw new ArgumentNullException(nameof(passphrase));
+            byte[] data = Base58CheckDecode(nep2);
+            if (data.Length != 39 || data[0] != 0x01 || data[1] != 0x42 || data[2] != 0xe0)
+                throw new FormatException();
+            byte[] addresshash = new byte[4];
+            Buffer.BlockCopy(data, 3, addresshash, 0, 4);
+            byte[] derivedkey = SCrypt.DeriveKey(Encoding.UTF8.GetBytes(passphrase), addresshash, 16384, 8, 8, 64);
+            byte[] derivedhalf1 = derivedkey.Take(32).ToArray();
+            byte[] derivedhalf2 = derivedkey.Skip(32).ToArray();
+            byte[] encryptedkey = new byte[32];
+            Buffer.BlockCopy(data, 7, encryptedkey, 0, 32);
+            byte[] prikey = XOR(AES256Decrypt(encryptedkey, derivedhalf2), derivedhalf1);
+            //Cryptography.ECC.ECPoint pubkey = Cryptography.ECC.ECCurve.Secp256r1.G * prikey;
+            //UInt160 script_hash = Contract.CreateSignatureRedeemScript(pubkey).ToScriptHash();
+            //string address = ToAddress(script_hash);
+            //if (!Encoding.ASCII.GetBytes(address).Sha256().Sha256().Take(4).SequenceEqual(addresshash))
+            //    throw new FormatException();
+            return prikey;
+        }
+        public static byte[] Sha256(byte[] data, int start = 0, int length = -1)
+        {
+            byte[] tdata = null;
+
+            if (start == 0 && length == -1)
+            {
+                tdata = data;
+            }
+            else
+            {
+                tdata = new byte[length];
+                Array.Copy(data, 0, tdata, 0, length);
+            }
+            System.Security.Cryptography.SHA256 sha256 = System.Security.Cryptography.SHA256.Create();
+            return sha256.ComputeHash(tdata);
+
+        }
+        public static byte[] Base58CheckDecode(string input)
+        {
+            byte[] buffer = ThinNeo.Cryptography.Cryptography.Base58.Decode(input);
+            if (buffer.Length < 4) throw new FormatException();
+
+            var b1 = Sha256(buffer, 0, buffer.Length - 4);
+
+            byte[] checksum = Sha256(b1);
+
+            if (!buffer.Skip(buffer.Length - 4).SequenceEqual(checksum.Take(4)))
+                throw new FormatException();
+            return buffer.Take(buffer.Length - 4).ToArray();
+        }
+        public static string Base58CheckEncode(byte[] data)
+        {
+            var b1 = Sha256(data);
+            byte[] checksum = Sha256(b1);
+            byte[] buffer = new byte[data.Length + 4];
+            Buffer.BlockCopy(data, 0, buffer, 0, data.Length);
+            Buffer.BlockCopy(checksum, 0, buffer, data.Length, 4);
+            return ThinNeo.Cryptography.Cryptography.Base58.Encode(buffer);
+        }
+        static byte[] XOR(byte[] x, byte[] y)
+        {
+            if (x.Length != y.Length) throw new ArgumentException();
+            return x.Zip(y, (a, b) => (byte)(a ^ b)).ToArray();
+        }
+        internal static byte[] AES256Encrypt(byte[] block, byte[] key)
+        {
+            using (System.Security.Cryptography.Aes aes = System.Security.Cryptography.Aes.Create())
+            {
+                aes.Key = key;
+                aes.Mode = System.Security.Cryptography.CipherMode.ECB;
+                aes.Padding = System.Security.Cryptography.PaddingMode.None;
+                using (System.Security.Cryptography.ICryptoTransform encryptor = aes.CreateEncryptor())
+                {
+                    return encryptor.TransformFinalBlock(block, 0, block.Length);
+                }
+            }
+        }
+        internal static byte[] AES256Decrypt(byte[] block, byte[] key)
+        {
+            using (System.Security.Cryptography.Aes aes = System.Security.Cryptography.Aes.Create())
+            {
+                aes.Key = key;
+                aes.Mode = System.Security.Cryptography.CipherMode.ECB;
+                aes.Padding = System.Security.Cryptography.PaddingMode.None;
+                using (System.Security.Cryptography.ICryptoTransform decryptor = aes.CreateDecryptor())
+                {
+                    return decryptor.TransformFinalBlock(block, 0, block.Length);
+                }
             }
         }
     }

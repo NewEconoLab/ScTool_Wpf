@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Numerics;
 
-namespace ThinNeo.Cryptography.Cryptography.ECC
+namespace ThinNeo.Cryptography.ECC
 {
     /// <summary>
     /// ECC椭圆曲线参数

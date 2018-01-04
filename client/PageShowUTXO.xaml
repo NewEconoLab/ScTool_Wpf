@@ -38,6 +38,7 @@
                 <TextBox x:Name="wifText" HorizontalAlignment="Left" Height="48" Margin="167,0,0,0" TextWrapping="Wrap" Text="L13wAkUX1SAx6K9zztkS8RjxDMedBEzbtgZSZRYKUUBMP23BEgLM" VerticalAlignment="Top" Width="333" SpellCheck.IsEnabled="True"/>
                 <Button Content="2.得到UTXO" HorizontalAlignment="Left" Margin="12,97,0,0" VerticalAlignment="Top" Width="143" Click="Button_Click" Height="19"/>
                 <Button Content="得到服务器同步高度" HorizontalAlignment="Left" Margin="12,49,0,0" VerticalAlignment="Top" Width="125" Click="Button_Click_1" Height="19"/>
+                <Button Content="打開NEP6錢包" HorizontalAlignment="Left" Margin="282,97,0,0" VerticalAlignment="Top" Width="126" Click="Button_Click_6"/>
             </Grid>
         </GroupBox>
         <TextBox x:Name="texturl_node" HorizontalAlignment="Left" Height="23" Margin="183,33,0,0" TextWrapping="Wrap" Text="http://47.96.168.8:20332" VerticalAlignment="Top" Width="200"/>

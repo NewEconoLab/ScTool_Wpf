@@ -217,6 +217,23 @@ namespace client
 
         }
 
+        private void Button_Click_6(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "*.json|*.json";
+            if (ofd.ShowDialog() == true)
+            {
+                ThinNeo.NEP6.NEP6Wallet wallet = new ThinNeo.NEP6.NEP6Wallet(ofd.FileName);
+                foreach (var w in wallet.accounts)
+                {
+                    listInfo.Items.Add(w.Key);
+                    var prikey = w.Value.GetPrivate("我不会告诉你我的密码");
+                    listInfo.Items.Add("pkey:" + ThinNeo.Helper.Bytes2HexString(prikey));
+                }
+
+            }
+        }
+
         //private async void Button_Click_2(object sender, RoutedEventArgs e)
         //{
         //    System.Net.WebClient wc = new System.Net.WebClient();
