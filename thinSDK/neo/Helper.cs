@@ -324,6 +324,8 @@ namespace ThinNeo
             //if (!Encoding.ASCII.GetBytes(address).Sha256().Sha256().Take(4).SequenceEqual(addresshash))
             //    throw new FormatException();
             return prikey;
+
+
         }
         public static byte[] Sha256(byte[] data, int start = 0, int length = -1)
         {

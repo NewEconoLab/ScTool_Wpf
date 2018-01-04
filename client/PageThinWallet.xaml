@@ -50,7 +50,7 @@
                 </Grid.RowDefinitions>
                 <Button Content="Load Nep6 wallet file" VerticalAlignment="Top" Height="18" HorizontalAlignment="Right" Width="156" Click="Button_Click"/>
                 <Label Content="Label" Grid.Column="1" Grid.RowSpan="2"/>
-                <ListBox  Grid.Row="1"  Grid.ColumnSpan="2"/>
+                <ListBox x:Name="listAddr"  Grid.Row="1"  Grid.ColumnSpan="2"/>
 
             </Grid>
         </GroupBox>

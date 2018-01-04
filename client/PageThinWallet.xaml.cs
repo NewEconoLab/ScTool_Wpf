@@ -69,26 +69,35 @@ namespace client
             ofd.Filter = "*.json|*.json";
             if (ofd.ShowDialog() == true)
             {
+                listAddr.Items.Clear();
 
                 nep6wallet = new ThinNeo.NEP6.NEP6Wallet(ofd.FileName);
                 Dialog_Input_password pass = new Dialog_Input_password();
-
                 if (pass.ShowDialog() == true)
                 {
+                    password = pass.password;
+
                     foreach (var w in nep6wallet.accounts)
                     {
                         try
                         {
                             var pkey = w.Value.GetPrivate(pass.password);
                             var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(pkey);
-                            var phash = ThinNeo.Helper.GetPublicKeyHash(pubkey);
+                            var phash = ThinNeo.Helper.GetScriptHashFromPublicKey(pubkey);
                             string hex = ThinNeo.Helper.Bytes2HexString(phash);
                             var add1 = ThinNeo.Helper.GetAddressFromScriptHash(ThinNeo.Helper.HexString2Bytes(w.Key));
                             var add2 = ThinNeo.Helper.GetAddressFromScriptHash(phash);
+
+                            var nep2 = ThinNeo.Helper.GetNep2FromPrivateKey(pkey, pass.password);
+                            var pkey2 = ThinNeo.Helper.GetPrivateKeyFromNEP2(nep2, pass.password);
+                            var pkey3 = ThinNeo.Helper.GetPublicKeyFromPrivateKey(pkey2);
+                            var phash3 = ThinNeo.Helper.GetScriptHashFromPublicKey(pkey3);
+                            var add32 = ThinNeo.Helper.GetAddressFromScriptHash(phash3);
+
                             if (hex != w.Key)
                                 throw new Exception("密码错");
                             mapprikey[w.Key] = pkey;
-
+                          
                         }
                         catch
                         {
@@ -98,8 +107,18 @@ namespace client
                         }
                     }
                 }
-
-
+                foreach (var w in nep6wallet.accounts)
+                {
+                    var add1 = ThinNeo.Helper.GetAddressFromScriptHash(ThinNeo.Helper.HexString2Bytes(w.Key));
+                    if(mapprikey.ContainsKey(w.Key))
+                    {
+                        listAddr.Items.Add(add1 + "<含私钥>");
+                    }
+                    else
+                    {
+                        listAddr.Items.Add(add1 + "<无私钥>");
+                    }
+                }
             }
         }
     }
