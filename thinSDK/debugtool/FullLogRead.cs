@@ -219,6 +219,7 @@ namespace ThinNeo.SmartContract.Debug
     {
         public int addr;
         public VM.OpCode op;
+        public bool error;
         //public string syscall;
         //public string[] syscallinfo;
         public Op[] stack;

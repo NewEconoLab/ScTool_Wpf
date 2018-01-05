@@ -65,12 +65,12 @@ namespace ThinNeo.Debug
                 StateID++;
                 return true;
             }
-            if(op==VM.OpCode.ROLL)
-            {
-                int n = (int)CalcStack.Pop().AsInt();
-                CalcStack.Push(CalcStack.Remove(n));
-                return true;
-            }
+            //if (op == VM.OpCode.ROLL)
+            //{
+            //    int n = (int)CalcStack.Pop().AsInt();
+            //    CalcStack.Push(CalcStack.Remove(n));
+            //    return true;
+            //}
             return false;
         }
         public void CalcCalcStack(SmartContract.Debug.Op stackop, SmartContract.Debug.StackItem item)
@@ -211,60 +211,74 @@ namespace ThinNeo.Debug
         public List<CareItem> careinfo;
         void ExecuteScript(State runstate, SmartContract.Debug.LogScript script)
         {
-            runstate.PushExe(script.hash);
-            foreach (var op in script.ops)
+            try
             {
-                if (op.op == VM.OpCode.APPCALL)//不造成栈影响，由目标script影响
+                runstate.PushExe(script.hash);
+                foreach (var op in script.ops)
                 {
-                    var _script = op.subScript;
-                    if (op.subScript == null)
+                    try
                     {
-                        _script = new SmartContract.Debug.LogScript(runstate.CalcStack.Peek().strvalue);
-                    }
-                    ExecuteScript(runstate, _script);
-                    mapState[op] = runstate.StateID;
-                }
-                else if (op.op == VM.OpCode.CALL)//不造成栈影响 就是个jmp
-                {
-                    runstate.PushExe(script.hash);
-                    mapState[op] = runstate.StateID;
-                }
-                else if (op.op == VM.OpCode.RET)
-                {
-                    mapState[op] = runstate.StateID;
-                }
-                else
-                {
-                    if (op.op == VM.OpCode.SYSCALL)//syscall比较独特，有些syscall 可以产生独立的log
-                    {
-                        var name = System.Text.Encoding.ASCII.GetString(op.param);
-                        careinfo.Add(new CareItem(name, runstate));
-                        //runstate.DoSysCall(op.op);
-                    }
-                    if (runstate.CalcCalcStack(op.op) == false)
-                    {
-                        if (op.stack != null)
+                        if (op.op == VM.OpCode.APPCALL)//不造成栈影响，由目标script影响
                         {
-
-                            for (var i = 0; i < op.stack.Length; i++)
+                            var _script = op.subScript;
+                            if (op.subScript == null)
                             {
-                                if (i == op.stack.Length - 1)
+                                _script = new SmartContract.Debug.LogScript(runstate.CalcStack.Peek().strvalue);
+                            }
+                            ExecuteScript(runstate, _script);
+                            mapState[op] = runstate.StateID;
+                        }
+                        else if (op.op == VM.OpCode.CALL)//不造成栈影响 就是个jmp
+                        {
+                            runstate.PushExe(script.hash);
+                            mapState[op] = runstate.StateID;
+                        }
+                        else if (op.op == VM.OpCode.RET)
+                        {
+                            mapState[op] = runstate.StateID;
+                        }
+                        else
+                        {
+                            if (op.op == VM.OpCode.SYSCALL)//syscall比较独特，有些syscall 可以产生独立的log
+                            {
+                                var name = System.Text.Encoding.ASCII.GetString(op.param);
+                                careinfo.Add(new CareItem(name, runstate));
+                                //runstate.DoSysCall(op.op);
+                            }
+                            if (runstate.CalcCalcStack(op.op) == false)
+                            {
+                                if (op.stack != null)
                                 {
-                                    runstate.CalcCalcStack(op.stack[i], op.opresult);
-                                }
-                                else
-                                {
-                                    runstate.CalcCalcStack(op.stack[i], null);
+
+                                    for (var i = 0; i < op.stack.Length; i++)
+                                    {
+                                        if (i == op.stack.Length - 1)
+                                        {
+                                            runstate.CalcCalcStack(op.stack[i], op.opresult);
+                                        }
+                                        else
+                                        {
+                                            runstate.CalcCalcStack(op.stack[i], null);
+                                        }
+                                    }
                                 }
                             }
+                            if (stateClone.ContainsKey(runstate.StateID) == false)
+                            {
+                                stateClone[runstate.StateID] = (Debug.State)runstate.Clone();
+                            }
+                            mapState[op] = runstate.StateID;
                         }
                     }
-                    if (stateClone.ContainsKey(runstate.StateID) == false)
+                    catch(Exception err1)
                     {
-                        stateClone[runstate.StateID] = (Debug.State)runstate.Clone();
+                        op.error = true;
                     }
-                    mapState[op] = runstate.StateID;
                 }
+            }
+            catch (Exception err)
+            {
+                throw new Exception("error in:" + err.Message);
             }
         }
     }

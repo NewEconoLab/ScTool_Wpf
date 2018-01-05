@@ -29,7 +29,7 @@ namespace client
         }
         public ThinNeo.Debug.DebugTool debugtool = new ThinNeo.Debug.DebugTool();
         System.Net.WebClient wc = new client.MyWC();
-        void downloadScript(string api,string savepath,string scripthash)
+        void downloadScript(string api, string savepath, string scripthash)
         {
             try
             {
@@ -56,7 +56,8 @@ namespace client
                     var outfile = System.IO.Path.Combine(savepath, scripthash + ".debug.json");
                     System.IO.File.WriteAllText(outfile, mapResult);
                 }
-            }catch(Exception err)
+            }
+            catch (Exception err)
             {
 
             }
@@ -70,13 +71,13 @@ namespace client
             var transid = this.textTid.Text;
             byte[] info = ThinNeo.Helper.HexString2Bytes(transid.ToLower());
             transid = "0x" + ThinNeo.Helper.Bytes2HexString(info);
-            if(transid!="0x00")
+            if (transid != "0x00")
             {//download and write debugfile
                 var filename = System.IO.Path.Combine(pathLog, transid + ".llvmhex.txt");
                 var url = textAPITran.Text + "?jsonrpc=2.0&id=1&method=getfulllog&params=[%22" + transid + "%22]";
                 var rtnstr = wc.DownloadString(url);
                 var json = MyJson.Parse(rtnstr).AsDict();
-                if(json.ContainsKey("result")==false)
+                if (json.ContainsKey("result") == false)
                 {
                     MessageBox.Show("找不到此交易的智能合约log。Can not find fullloginfo for this transaction.");
                     return;
@@ -84,6 +85,13 @@ namespace client
                 var txt = json["result"].AsList()[0].AsDict()["fulllog7z"].AsString();
                 System.IO.File.WriteAllText(filename, txt);
             }
+            LoadTxLog(transid);
+        }
+
+        private void LoadTxLog(string transid)
+        {
+            string rootPath = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location);
+            string pathLog = System.IO.Path.Combine(rootPath, "tempLog");
 
             string pathScript = System.IO.Path.Combine(rootPath, "tempScript");
             if (System.IO.Directory.Exists(pathScript) == false)
@@ -91,7 +99,14 @@ namespace client
             this.listLoadInfo.Items.Clear();
             try
             {
-                debugtool.Load(pathLog, pathScript, transid);
+                try
+                {
+                    debugtool.Load(pathLog, pathScript, transid);
+                }
+                catch (Exception err1)
+                {
+                    this.listLoadInfo.Items.Add(err1.Message);
+                }
                 this.listLoadInfo.Items.Add("load finish");
                 List<string> scriptnames = new List<string>();
                 debugtool.fullLog.script.GetAllScriptName(scriptnames);
@@ -227,6 +242,10 @@ namespace client
                 {
                     string p = System.Text.Encoding.ASCII.GetString(op.param);
                     itemop.Header = op.GetHeader() + " " + p;
+                }
+                if (op.error)
+                {
+                    itemop.Background = new SolidColorBrush(Color.FromRgb(255, 127, 127));
                 }
                 itemop.Tag = op;
                 treeitem.Items.Add(itemop);
@@ -422,6 +441,25 @@ namespace client
                 MessageBox.Show("api fail:" + err.Message, "", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+            string rootPath = System.IO.Path.GetDirectoryName(this.GetType().Assembly.Location);
+            string pathLog = System.IO.Path.Combine(rootPath, "tempLog");
+            if (System.IO.Directory.Exists(pathLog) == false)
+                System.IO.Directory.CreateDirectory(pathLog);
+
+            Microsoft.Win32.OpenFileDialog ofd = new Microsoft.Win32.OpenFileDialog();
+            ofd.Filter = "*.llvmhex.txt|*.llvmhex.txt";
+            if (ofd.ShowDialog() == true)
+            {//download and write debugfile
+                var txt = System.IO.File.ReadAllText(ofd.FileName);
+                var filename = System.IO.Path.Combine(pathLog, "0x01" + ".llvmhex.txt");
+                System.IO.File.Delete(filename);
+                System.IO.File.WriteAllText(filename, txt);
+            }
+            LoadTxLog("0x01");
         }
     }
 }

@@ -57,6 +57,7 @@
                 <TextBox x:Name="textTid" Height="39" Margin="10,20,0,0" TextWrapping="Wrap" Text="0xfc84ab554efb7b2e1e18eb5cdb63d2220bc10eac336ff6957af4775b2c8cb5ac" VerticalAlignment="Top" Width="460"/>
                 <Button Content="Load" HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click" Grid.RowSpan="2"/>
                 <ListBox x:Name="listLoadInfo" Margin="0,0,1,0" Grid.Row="1"/>
+                <Button Content="LoadFromFile" HorizontalAlignment="Left" Margin="103,64,0,0" VerticalAlignment="Top" Width="127" Click="Button_Click_3" />
 
             </Grid>
         </GroupBox>
