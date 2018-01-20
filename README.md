@@ -1,4 +1,9 @@
 # ScTool_Wpf
+* 此项目已废弃 The project has been discarded
+* 合约调试功能单独抽出为neondebug项目。smartcontract debug function has moved to project "neondebug".
+* 其他功能抽出为neo-thinsdk-cs项目。Other functions has moded to project"neo-thinsdk-cs".
+* 将于数日后删除仓库.this project will be remove in few days.
+
 [English Document](README_EN.md)
 
 ScTool 是 SmartContract Tools 的简写，是一套NEO智能合约调测工具。
