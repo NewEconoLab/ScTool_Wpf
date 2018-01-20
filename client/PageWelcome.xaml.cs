@@ -105,7 +105,7 @@ namespace client
                 textPrivate.Text = "Prikey:" + ThinNeo.Helper.Bytes2HexString(prikey) + "\n";
                 var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
                 textPrivate.Text += "Pubkey:" + ThinNeo.Helper.Bytes2HexString(pubkey) + "\n";
-                var pubkeyhash = ThinNeo.Helper.GetPublicKeyHash(pubkey);
+                var pubkeyhash = ThinNeo.Helper.GetScriptHashFromPublicKey(pubkey);
                 textPrivate.Text += "PubkeyHash:" + ThinNeo.Helper.Bytes2HexString(pubkeyhash) + "\n";
                 var address = ThinNeo.Helper.GetAddressFromScriptHash(pubkeyhash);
                 textPrivate.Text += "Address:" + address + "\n";
